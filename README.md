@@ -32,7 +32,7 @@ Different models are provided for specific use cases. The results presented in "
 - TA-GAN-dendrites : TA-GAN model with two classes semantic segmentation used as the complementary task.
 - TA-GAN-synprot : TA-GAN model with two classes semantic segmentation used as the complementary task.
 - TA-GAN-live : TA-GAN model with two classes semantic segmentation used as the complementary task. For this model, the segmentation network's weights are pre-trained and frozen.
-- TA-GAN-custom : Use this file to create your own TA-GAN model, specific to your datasets and analysis task of interest.
+- TA-GAN : Use this file to create your own TA-GAN model, specific to your datasets and analysis task of interest.
 
 <img src="/figures/network.png">
 
