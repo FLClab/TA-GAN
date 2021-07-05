@@ -83,19 +83,19 @@ The following lines can be directly used to test with the example data and the t
 ```
 python3 test.py --dataroot=axons --model=TA-GAN-axons --dataset_mode=mask --epoch=1000
 ```
-<img src="/figures/axons_test.png" width="50%" height="50%">
+<img src="/figures/axons_test.png">
 
 **Dendrites**
 ```
 python3 test.py --dataroot=dendrites --model=TA-GAN-dendrites --dataset_mode=dendrites --epoch=500
 ```
-<img src="/figures/dendrites_test.png" width="50%" height="50%">
+<img src="/figures/dendrites_test.png">
 
 **Synaptic Proteins**
 ```
 python3 test.py --dataroot=synprot --model=TA-GAN-synprot --dataset_mode=synprot --epoch=1000
 ```
-<img src="/figures/synprot_test.png" width="50%" height="50%">
+<img src="/figures/synprot_test.png">
 
 **Live cells**
 ```
