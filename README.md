@@ -1,7 +1,7 @@
 # TA-GAN
 ### Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy
 
-This repository contains all code necessited to train and test our super resolution generation algorithm. Sample images and trained weights are included for
+This repository contains all code necessited to train and test our super-resolution generation algorithm. Sample images and trained weights are included for
 anyone to test the method.
 
 Note that most of the code is taken directly from or heavily inspired by https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix.
@@ -47,7 +47,7 @@ dataloaders provided. Custom dataloaders can easily be built using the template 
  - aligned_dataset : Tiff images with confocal and STED images concatenated along the channel axis.
  - mask_dataset : Tiff images with confocal, STED, and the segmentation labels concatenated along the channel axis. 
  - two_masks_dataset : Tiff images with confocal, STED, and two channels of segmentation labels, concatenated along the channel axis.
- - synprot_dataset : Six channels Tiff images ordered as [confocal_A, STED_A, confocal_B, STED_B, segmentation_A, segmentation_B]. Used for synaptic proteins dataset.
+ - synprot_dataset : Tiff images with 6 channels ordered as [confocal_A, STED_A, confocal_B, STED_B, segmentation_A, segmentation_B]. Note that the confocal images were acquired with bigger pixels than the corresponding STED images (60 nm vs. 15 nm); to allow concatenation along the channel axis, the confocal images are upsampled by a factor of 4 with nearest-neighbor interpolation.
  - live_dataset : Tiff images, with confocal and STED images concatenated along the channel axis. This dataloader concatenates to the input modality (confocal) regions selected from the output modality (STED), along with a binary decision map indicating which regions from the output modality are given to the network. The generator should therefore take three channels as input. Before training, the user should decide the size of those regions by defining the variable *px* (line 66) and the random distribution from which the number of regions *n* is drawn (line 70).
 
 <img src="/figures/dataset_modes.png">
@@ -58,11 +58,11 @@ dataloaders provided. Custom dataloaders can easily be built using the template 
 
 Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/ta-gan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyper-parameters are defined as default values for each model. If you don't have access to a gpu, add the parameter ```gpu_ids=-1```.
 
-**Axons**
+**Axonal rings**
 ```
 python3 train.py --dataroot=axons --model=TA-GAN-axons --dataset_mode=mask
 ```
-**Dendrites**
+**Dendritic F-actin rings and fibers**
 ```
 python3 train.py --dataroot=dendrites --model=TA-GAN-dendrites --dataset_mode=two_masks
 ```
@@ -79,13 +79,13 @@ python3 train.py --dataroot=live --model=TA-GAN-live --dataset_mode=live --conti
 
 The following lines can be directly used to test with the example data and the trained models provided.
 
-**Axons**
+**Axonal rings**
 ```
 python3 test.py --dataroot=axons --model=TA-GAN-axons --dataset_mode=mask --epoch=1000
 ```
 <img src="/figures/axons_test.png">
 
-**Dendrites**
+**Dendritic F-actin rings and fibers**
 ```
 python3 test.py --dataroot=dendrites --model=TA-GAN-dendrites --dataset_mode=dendrites --epoch=500
 ```
@@ -113,7 +113,7 @@ The TA-GAN architecture can also be used to translate imaging modalities while p
 ```
 python3 train.py --dataroot=fixed_live --model=TA-GAN-cycle --dataset_mode=fixed_live 
 ```
-(2) Once trained, you can convert fixed cell images into live-cells images:
+(2) Once trained, you can convert fixed cell images into live cells images:
 ```
 python3 test.py --dataroot=fixed_live --model=TA-GAN-cycle --dataset_mode=fixed_live 
 ```
