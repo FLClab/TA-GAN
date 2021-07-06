@@ -70,7 +70,7 @@ python3 train.py --dataroot=dendrites --model=TA-GAN-dendrites --dataset_mode=tw
 ```
 python3 train.py --dataroot=synprot --model=TA-GAN-synprot --dataset_mode=synprot
 ```
-**Live cells** (with pretrained segmentation network)
+**Live F-actin** (with pretrained segmentation network)
 ```
 python3 train.py --dataroot=live --model=TA-GAN-live --dataset_mode=live --continue --epoch=pretrained
 ```
@@ -97,7 +97,7 @@ python3 test.py --dataroot=synprot --model=TA-GAN-synprot --dataset_mode=synprot
 ```
 <img src="/figures/synprot_test.png">
 
-**Live cells**
+**Live F-actin**
 ```
 python3 test.py --dataroot=live --model=TA-GAN-live --dataset_mode=live --epoch=5000
 ```
