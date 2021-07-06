@@ -2,7 +2,7 @@
 ### Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy
 
 This repository contains all code necessited to train and test our super-resolution generation algorithm. Sample images and trained weights are included for
-anyone to test the method.
+anyone to test the method. The datasets can be downloaded at https://s3.valeria.science/flclab-tagan/index.html.
 
 Note that most of the code is taken directly from or heavily inspired by https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix.
 
@@ -56,7 +56,7 @@ dataloaders provided. Custom dataloaders can easily be built using the template 
 
 ### Training
 
-Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/ta-gan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyper-parameters are defined as default values for each model. If you don't have access to a gpu, add the parameter ```gpu_ids=-1```.
+Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyper-parameters are defined as default values for each model. If you don't have access to a gpu, add the parameter ```gpu_ids=-1```.
 
 **Axonal rings**
 ```
@@ -109,7 +109,7 @@ To test on your own images, create a folder and add the images to a subfolder in
 
 The TA-GAN architecture can also be used to translate imaging modalities while preserving the content relevant to the biological interpretation of the images. In our brief communication, this is used to translate fixed cell images into live-cells images. 
 
-(1) Train the modality translation TA-GAN model by downaloding the dataset 'fixed_live' (https://s3.valeria.science/ta-gan/index.html) and running the following line:
+(1) Train the modality translation TA-GAN model by downaloding the dataset 'fixed_live' (https://s3.valeria.science/flclab-tagan/index.html) and running the following line:
 ```
 python3 train.py --dataroot=fixed_live --model=TA-GAN-cycle --dataset_mode=fixed_live 
 ```
@@ -117,7 +117,7 @@ python3 train.py --dataroot=fixed_live --model=TA-GAN-cycle --dataset_mode=fixed
 ```
 python3 test.py --dataroot=fixed_live --model=TA-GAN-cycle --dataset_mode=fixed_live 
 ```
-The generated images, along with the segmentation labels from the fixed cell images, can then be used to train a segmentation network for live cells. The translated (fixed -> live) images can also be directly downloaded : https://s3.valeria.science/ta-gan/index.html. 
+The generated images, along with the segmentation labels from the fixed cell images, can then be used to train a segmentation network for live cells. The translated (fixed -> live) images can also be directly downloaded : https://s3.valeria.science/flclab-tagan/index.html. 
 
 (3) Once downloaded (or generated using stepd 1 and 2), use the following line to train the segmentation network for live cells:
 ```
