@@ -1,10 +1,9 @@
 # TA-GAN
 ### Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy
 
-This repository contains all code necessited to train and test our super-resolution generation algorithm. Sample images and trained weights are included for
-anyone to test the method. The datasets can be downloaded at https://s3.valeria.science/flclab-tagan/index.html.
+This repository contains all code required to train and test our super-resolution microscopy image generation algorithm. Sample images and trained weights are included to test the method. The datasets can be downloaded at https://s3.valeria.science/flclab-tagan/index.html. The confocal and STimulated Emission Depletion (STED) microscopy images provided in the dataset were obtained from fixed and living primary cultures of rat hippocampal neurons and acquired on an Abberior Expert Line STED microscope. 
 
-The code is based on conditional generative adversarial networks for image-to-image translation (https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
+Note that most of the code is taken directly from or heavily inspired by https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix.
 
 ### Installation
 
@@ -24,7 +23,7 @@ nvidia-docker run -it --rm --user $(id -u) --shm-size=10g pytorch
 
 ## TA-GAN for resolution enhancement
 
-Different models are provided for specific use cases. The results presented in "Task-Assisted GAN for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" were obtained using TA-GAN-axons, TA-GAN-dendrites, TA-GAN-synprot (synaptic proteins) and TA-GAN-live (live cells).
+Different models are provided for specific use cases. The results presented in "Task-Assisted GAN for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" were obtained using TA-GAN-axons (F-actin in axons of fixed cultured hippocampal neurons), TA-GAN-dendrites (F-actin in dendrites of fixed cultured hippocampal neurons), TA-GAN-synprot (synaptic proteins Bassoon, Homer-1c and PSD95 in fixed cultured hippocampal neurons) and TA-GAN-live (F-actin in axons and dendrites of living cultured hippocampal neurons).
 
 #### Models
 
@@ -36,7 +35,7 @@ Different models are provided for specific use cases. The results presented in "
 
 <img src="/figures/network.png">
 
-Figure 1 : TA-GAN training architecture. Three networks are trained in parallel. The circles are the computed losses, with their specific color corresponding to the network they optimize. The segmentation of actin rings serves as a complementary task compelling the generation of accurate structures, with the segmentation network optimized solely by the segmentation loss of the real STED. The discriminator classifies the input STED as either real or synthetic, conditional to its confocal. The generator is trained by the GAN loss, i.e its ability to fool the discriminator, by a pixel-wise loss comparing the synthetic and real STED, and by the segmentation loss of the synthetic STED.
+Figure 1 : TA-GAN training architecture. Three networks are trained in parallel. The circles are the computed losses, with their specific color corresponding to the network they optimize. The segmentation serves as a complementary task compelling the generation of accurate structures, with the segmentation network optimized solely by the segmentation loss of the real STED. The discriminator classifies the input STED as either real or synthetic, conditional to its confocal. The generator is trained by the GAN loss, i.e its ability to fool the discriminator, by a pixel-wise loss comparing the synthetic and real STED, and by the segmentation loss of the synthetic STED.
 
 
 #### Dataloaders
@@ -58,7 +57,7 @@ dataloaders provided. Custom dataloaders can easily be built using the template 
 
 Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyper-parameters are defined as default values for each model. If you don't have access to a gpu, add the parameter ```gpu_ids=-1```.
 
-**Axonal rings**
+**Axonal F-actin rings**
 ```
 python3 train.py --dataroot=axons --model=TA-GAN-axons --dataset_mode=mask
 ```
@@ -77,9 +76,9 @@ python3 train.py --dataroot=live --model=TA-GAN-live --dataset_mode=live --conti
  
 ### Testing
 
-The following lines can be directly used to test with the example data and the trained models provided.
+The following lines can be directly used to test with the provided example data and the trained models.
 
-**Axonal rings**
+**Axonal F-actin rings**
 ```
 python3 test.py --dataroot=axons --model=TA-GAN-axons --dataset_mode=mask --epoch=1000
 ```
