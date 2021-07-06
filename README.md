@@ -3,7 +3,7 @@
 
 This repository contains all code required to train and test our super-resolution microscopy image generation algorithm. Sample images and trained weights are included to test the method. The datasets can be downloaded at https://s3.valeria.science/flclab-tagan/index.html. The confocal and STimulated Emission Depletion (STED) microscopy images provided in the dataset were obtained from fixed and living primary cultures of rat hippocampal neurons and acquired on an Abberior Expert Line STED microscope. 
 
-Note that most of the code is taken directly from or heavily inspired by https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix.
+The code is based on conditional generative adversarial networks for image-to-image translation (https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
 
 ### Installation
 
