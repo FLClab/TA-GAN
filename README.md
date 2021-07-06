@@ -4,7 +4,7 @@
 This repository contains all code necessited to train and test our super-resolution generation algorithm. Sample images and trained weights are included for
 anyone to test the method. The datasets can be downloaded at https://s3.valeria.science/flclab-tagan/index.html.
 
-Note that most of the code is taken directly from or heavily inspired by https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix.
+The code is based on conditional generative adversarial networks for image-to-image translation (https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
 
 ### Installation
 
