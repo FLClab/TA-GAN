@@ -3,10 +3,10 @@ from data.base_dataset import BaseDataset, get_params, get_transform
 from data.image_folder import make_dataset
 from PIL import Image
 import numpy
-from scipy.signal import convolve2d as conv2
+import torch
 import tifffile
 
-class SingleDataset(BaseDataset):
+class MaskDataset(BaseDataset):
     """A dataset class for paired image dataset.
 
     It assumes that the directory '/path/to/data/train' contains image pairs in the form of {A,B}.
@@ -20,8 +20,8 @@ class SingleDataset(BaseDataset):
             opt (Option class) -- stores all the experiment flags; needs to be a subclass of BaseOptions
         """
         BaseDataset.__init__(self, opt)
-        self.dir_ABC = os.path.join(opt.dataroot, opt.phase)  # get the image directory
-        self.ABC_paths = sorted(make_dataset(self.dir_ABC, opt.max_dataset_size))  # get image paths
+        self.dir_AB = os.path.join(opt.dataroot, opt.phase)  # get the image directory
+        self.AB_paths = sorted(make_dataset(self.dir_AB, opt.max_dataset_size))  # get image paths
         assert(self.opt.load_size >= self.opt.crop_size)   # crop_size should be smaller than the size of loaded image
         self.input_nc = self.opt.output_nc if self.opt.direction == 'BtoA' else self.opt.input_nc
         self.output_nc = self.opt.input_nc if self.opt.direction == 'BtoA' else self.opt.output_nc
@@ -38,18 +38,28 @@ class SingleDataset(BaseDataset):
             A_paths (str) - - image paths
             B_paths (str) - - image paths (same as A_paths)
         """
-        # read an image given a random integer index
-        ABC_path = self.ABC_paths[index]
-        A = Image.fromarray(tifffile.imread(ABC_path))#/(2**8))
+        # read a image given a random integer index
+        AB_path = self.AB_paths[index]
 
-        # apply the same transform to A, B, C and D
+        ABC = Image.open(AB_path).convert('L')#tifffile.imread(AB_path)
+        # split AB image into A and B
+        w, h = ABC.size
+        w2 = int(w / 3)
+        A = ABC.crop((0, 0, w2, h))
+        B = ABC.crop((w2, 0, 2*w2, h))
+        C = ABC.crop((2*w2, 0, w, h))
+
         transform_params = get_params(self.opt, A.size)
         A_transform = get_transform(self.opt, transform_params, grayscale=True)
+        B_transform = get_transform(self.opt, transform_params, grayscale=True)
+        C_transform = get_transform(self.opt, transform_params, grayscale=True)
 
         A = A_transform(A)
+        B = B_transform(B)
+        C = C_transform(C)
 
-        return {'A': A, 'B': A, 'A_paths': ABC_path}
+        return {'A': A, 'B': B, 'C': C, 'A_paths': AB_path, 'B_paths': AB_path}
 
     def __len__(self):
         """Return the total number of images in the dataset."""
-        return len(self.ABC_paths)
+        return len(self.AB_paths)

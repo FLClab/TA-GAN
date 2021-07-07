@@ -4,13 +4,9 @@ from data.image_folder import make_dataset
 from PIL import Image
 import numpy
 import torch
-import random
 import tifffile
-import skimage
-from skimage import measure
-from torchvision import transforms
 
-class LiveSTEDPairedDataset(BaseDataset):
+class MaskDataset(BaseDataset):
     """A dataset class for paired image dataset.
 
     It assumes that the directory '/path/to/data/train' contains image pairs in the form of {A,B}.
@@ -44,37 +40,25 @@ class LiveSTEDPairedDataset(BaseDataset):
         """
         # read a image given a random integer index
         AB_path = self.AB_paths[index]
-        AB = tifffile.imread(AB_path)
-        if AB.min() == 32768:
-            AB = AB - 32768
-        # split AB image into A and B
-        h, w = AB.shape
-        w2 = int(w / 2)
-        A = AB[:, :w2]
-        B = AB[:, w2:]
-        A = Image.fromarray(A)
-        B = Image.fromarray(B)
 
-        # apply the same transform to both A and B
+        ABC = Image.open(AB_path).convert('L')#tifffile.imread(AB_path)
+        # split AB image into A and B
+        w, h = ABC.size
+        w2 = int(w / 3)
+        A = ABC.crop((0, 0, w2, h))
+        B = ABC.crop((w2, 0, 2*w2, h))
+        C = ABC.crop((2*w2, 0, w, h))
+
         transform_params = get_params(self.opt, A.size)
         A_transform = get_transform(self.opt, transform_params, grayscale=True)
         B_transform = get_transform(self.opt, transform_params, grayscale=True)
+        C_transform = get_transform(self.opt, transform_params, grayscale=True)
 
         A = A_transform(A)
         B = B_transform(B)
+        C = C_transform(C)
 
-        # Add channel consisting of real STED crops
-        # First, simplify the confocal to a map of super-pixels
-        px = random.choice([100]) # pixel size
-        sup_px_map = skimage.measure.block_reduce(A.numpy()[0], (px,px), numpy.mean)
-        sorted_list = numpy.sort(sup_px_map.ravel())
-        n = random.choice(range(0,int(0.5*len(sorted_list)+1)))#int(random.uniform(0,0.5) * len(sorted_list))
-        sup_px_map = sup_px_map > sorted_list[-(n + 1)]
-        sup_px_map = Image.fromarray(sup_px_map).resize((A.shape[2], A.shape[1])) # 0-1
-        tf = transforms.ToTensor()
-        sup_px_map = tf(sup_px_map)# * numpy.random.randint(2)
-
-        return {'A': A, 'B': B, 'A_paths': AB_path, 'B_paths': AB_path, 'decision_map': sup_px_map}
+        return {'A': A, 'B': B, 'C': C, 'A_paths': AB_path, 'B_paths': AB_path}
 
     def __len__(self):
         """Return the total number of images in the dataset."""

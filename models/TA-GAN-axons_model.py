@@ -5,7 +5,7 @@ from torchvision import models
 import itertools
 
 class TAGANAxons(BaseModel):
-    """ This class implements the TA-GAN model for confocal to STED resolution enhancement for the axons dataset.
+    """ This class implements the TA-GAN model for confocal to STED resolution enhancement for the F-actin rings dataset.
 
     Original code taken from pix2pix paper: https://arxiv.org/pdf/1611.07004.pdf
     """
@@ -21,10 +21,10 @@ class TAGANAxons(BaseModel):
             the modified parser.
 
         """
-        # changing the default values to match the pix2pix paper (https://phillipi.github.io/pix2pix/)
+        
         parser.set_defaults(norm='batch', netG='resnet_9blocks', netS='resnet_6blocks', dataset_mode='mask')
         if is_train:
-            parser.set_defaults(pool_size=0, gan_mode='vanilla', niter=900, niter_decay=100, batch_size=8)
+            parser.set_defaults(pool_size=0, gan_mode='vanilla', niter=900, niter_decay=100, batch_size=8, preprocess='crop_rotation', crop_size=128)
             parser.add_argument('--lambda_GAN', type=float, default=1, help='weight for GAN loss')
             parser.add_argument('--lambda_seg', type=float, default=10, help='weight for seg loss')
         return parser
@@ -46,7 +46,7 @@ class TAGANAxons(BaseModel):
             self.model_names = ['G', 'S', 'D']
         else:  # during test time, only load G and S
             self.model_names = ['G', 'S']
-        # define networks (generator, discriminator and reference VGG)
+        # define networks (generator, discriminator and segmentation network)
         self.netG = networks.define_G(opt.input_nc, opt.output_nc, opt.ngf, opt.netG, opt.norm,
                                       not opt.no_dropout, opt.init_type, opt.init_gain, self.gpu_ids) # not opt.no_dropout
         self.netS = networks.define_S(opt.input_nc, opt.output_nc, opt.ngf, opt.netS, opt.norm, False, opt.init_type, opt.init_gain, self.gpu_ids)
@@ -59,6 +59,7 @@ class TAGANAxons(BaseModel):
             # define loss functions
             self.criterionGAN = networks.GANLoss(opt.gan_mode).to(self.device)
             self.criterionSEG = torch.nn.MSELoss()
+
             # initialize optimizers; schedulers will be automatically created by function <BaseModel.setup>.
             self.optimizer_G = torch.optim.Adam(self.netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.optimizer_D = torch.optim.Adam(self.netD.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
@@ -73,12 +74,11 @@ class TAGANAxons(BaseModel):
         Parameters:
             input (dict): include the data itself and its metadata information.
 
-        The option 'direction' can be used to swap images in domain A and domain B.
         """
         self.confocal = input['confocal'].to(self.device)
         self.STED = input['STED'].to(self.device)
-        self.image_paths = input['confocal_paths']
         self.seg_GT = input['seg_GT'].to(self.device)
+        self.image_paths = input['image_paths']
 
     def forward(self):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
@@ -89,14 +89,14 @@ class TAGANAxons(BaseModel):
     def backward_D(self):
         """Calculate GAN loss for the discriminator"""
         # Fake; stop backprop to the generator by detaching fake_B
-        fake_confSTED = torch.cat((self.confocal, self.fake_B), 1)  # we use conditional GANs; we need to feed both input and output to the discriminator
+        fake_confSTED = torch.cat((self.confocal, self.fakeSTED), 1) 
         pred_fake = self.netD(fake_confSTED.detach())
         self.loss_D_fake = self.criterionGAN(pred_fake, False) * self.opt.lambda_GAN
         # Real
         real_confSTED = torch.cat((self.confocal, self.STED), 1)
         pred_real = self.netD(real_confSTED)
         self.loss_D_real = self.criterionGAN(pred_real, True) * self.opt.lambda_GAN
-        # combine loss and calculate gradients
+        # Combine losses and calculate gradients
         self.loss_D = (self.loss_D_fake + self.loss_D_real) * 0.5
         self.loss_D.backward()
 
@@ -110,7 +110,7 @@ class TAGANAxons(BaseModel):
         # Segmentation loss
         self.loss_S_fake = self.criterionSEG(self.seg_fakeSTED, self.seg_GT) * self.opt.lambda_seg # loss between fake B segmentation and GT
 
-        # combine losses and calculate gradients
+        # Combine losses and calculate gradients
         self.loss_G = self.loss_G_GAN + self.loss_S_fake
         self.loss_G.backward()
 
@@ -134,4 +134,4 @@ class TAGANAxons(BaseModel):
         # update S
         self.optimizer_S.zero_grad()        # set S's gradients to zero
         self.backward_S()                   # calculate gradients for S
-        self.optimizer_S.step()             # udpate S's weights, don't if fine-tuning
+        self.optimizer_S.step()             # udpate S's weights
