@@ -55,11 +55,11 @@ dataloaders provided. Custom dataloaders can easily be built using the template 
 
 ### Training
 
-Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyper-parameters are defined as default values for each model. **If you don't have access to a gpu, add the parameter ```gpu_ids=-1```.**
+Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyper-parameters are defined as default values for each model. **If you don't have access to a gpu, add the parameter ```gpu_ids=-1```.** 
 
 **Axonal F-actin rings**
 ```
-python3 train.py --dataroot=FActinRingsDataset --model=TA-GAN-axons
+python3 train.py --dataroot=AxonalRingsDataset --model=TAGAN_AxonalRings
 ```
 **Dendritic F-actin rings and fibers**
 ```
@@ -67,7 +67,7 @@ python3 train.py --dataroot=DendriticFActinDataset --model=TA-GAN-dendrites
 ```
 **Synaptic Proteins**
 ```
-python3 train.py --dataroot=SynapticProteins --model=TA-GAN-synprot
+python3 train.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot
 ```
 **Live F-actin** (with pretrained segmentation network)
 ```
@@ -80,7 +80,7 @@ The following lines can be directly used to test with the provided example data 
 
 **Axonal F-actin rings**
 ```
-python3 test.py --dataroot=FActinRings --model=TA-GAN-axons --dataset_mode=mask --epoch=1000 --name=FActinRings
+python3 test.py --dataroot=AxonalRingsDataset --model=TAGAN_AxonalRings --epoch=1000 --name=AxonalRings
 ```
 <img src="/figures/axons_test.png">
 
