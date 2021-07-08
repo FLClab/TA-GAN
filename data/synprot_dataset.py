@@ -6,11 +6,9 @@ import numpy
 import torch
 import tifffile
 
-class MaskDataset(BaseDataset):
-    """A dataset class for paired image dataset.
+class SynprotDataset(BaseDataset):
+    """A dataset class for paired image dataset with segmentation mask fo one structure.
 
-    It assumes that the directory '/path/to/data/train' contains image pairs in the form of {A,B}.
-    During test time, you need to prepare a directory '/path/to/data/test'.
     """
 
     def __init__(self, opt):
@@ -20,11 +18,11 @@ class MaskDataset(BaseDataset):
             opt (Option class) -- stores all the experiment flags; needs to be a subclass of BaseOptions
         """
         BaseDataset.__init__(self, opt)
-        self.dir_AB = os.path.join(opt.dataroot, opt.phase)  # get the image directory
-        self.AB_paths = sorted(make_dataset(self.dir_AB, opt.max_dataset_size))  # get image paths
+        self.dir_images = os.path.join(opt.dataroot, opt.phase)  # get the image directory
+        self.image_paths = sorted(make_dataset(self.dir_images, opt.max_dataset_size))  # get image paths
         assert(self.opt.load_size >= self.opt.crop_size)   # crop_size should be smaller than the size of loaded image
-        self.input_nc = self.opt.output_nc if self.opt.direction == 'BtoA' else self.opt.input_nc
-        self.output_nc = self.opt.input_nc if self.opt.direction == 'BtoA' else self.opt.output_nc
+        self.input_nc = self.opt.output_nc
+        self.output_nc = self.opt.input_nc
 
     def __getitem__(self, index):
         """Return a data point and its metadata information.
@@ -32,34 +30,45 @@ class MaskDataset(BaseDataset):
         Parameters:
             index - - a random integer for data indexing
 
-        Returns a dictionary that contains A, B, A_paths and B_paths
-            A (tensor) - - an image in the input domain
-            B (tensor) - - its corresponding image in the target domain
-            A_paths (str) - - image paths
-            B_paths (str) - - image paths (same as A_paths)
+        Returns a dictionary that contains confocal, STED, spots and image_paths
+            confocal(tensor) - - a confocal image 
+            STED (tensor) - - its corresponding STED image
+            spots (tensor) - - the STED image wavelet segmentation
+            image_paths (str) - - image paths
         """
         # read a image given a random integer index
-        AB_path = self.AB_paths[index]
+        image_path = self.image_paths[index]
+        img = tifffile.imread(image_path)
+        spots561 = Image.fromarray(img[2])  
+        spots640 = Image.fromarray(img[5])  
+        conf561 = Image.fromarray(img[0])   
+        conf640 = Image.fromarray(img[3])   
+        sted561 = Image.fromarray(img[1])  
+        sted640 = Image.fromarray(img[4])
 
-        ABC = Image.open(AB_path).convert('L')#tifffile.imread(AB_path)
-        # split AB image into A and B
-        w, h = ABC.size
-        w2 = int(w / 3)
-        A = ABC.crop((0, 0, w2, h))
-        B = ABC.crop((w2, 0, 2*w2, h))
-        C = ABC.crop((2*w2, 0, w, h))
+        # Transform
+        transform_params = get_params(self.opt, conf561.size)
+        transform = get_transform(self.opt, transform_params, grayscale=True)
+        transform_spots = get_transform(self.opt, transform_params, grayscale=True)
 
-        transform_params = get_params(self.opt, A.size)
-        A_transform = get_transform(self.opt, transform_params, grayscale=True)
-        B_transform = get_transform(self.opt, transform_params, grayscale=True)
-        C_transform = get_transform(self.opt, transform_params, grayscale=True)
+        spots561 = transform_spots(spots561)
+        conf561 = transform(conf561)
+        conf561 = ((conf561 - conf561.min()) / (conf561.max()-conf561.min()) - 0.5)/0.5
+        sted561 = transform(sted561)
+        sted561 = ((sted561 - sted561.min()) / (sted561.max()-sted561.min()) - 0.5)/0.5
 
-        A = A_transform(A)
-        B = B_transform(B)
-        C = C_transform(C)
+        spots640 = transform_spots(spots640)
+        conf640 = transform(conf640)
+        conf640 = ((conf640 - conf640.min()) / (conf640.max()-conf640.min()) - 0.5)/0.5
+        sted640 = transform(sted640)
+        sted640 = ((sted640 - sted640.min()) / (sted640.max()-sted640.min()) - 0.5)/0.5
 
-        return {'A': A, 'B': B, 'C': C, 'A_paths': AB_path, 'B_paths': AB_path}
+        conf = torch.cat((conf561, conf640), 0)
+        sted = torch.cat((sted561, sted640), 0)
+        spots = torch.cat((spots561, spots640), 0)
+
+        return {'confocal': conf, 'STED': sted, 'spots': spots, 'image_paths': image_path}
 
     def __len__(self):
         """Return the total number of images in the dataset."""
-        return len(self.AB_paths)
+        return len(self.image_paths)

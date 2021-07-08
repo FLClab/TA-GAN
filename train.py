@@ -45,16 +45,9 @@ if __name__ == '__main__':
     model.setup(opt)               # regular setup: load and print networks; create schedulers
     visualizer = Visualizer(opt)   # create a visualizer that display/save images and plots
 
-    f = 'checkpoints/'+str(opt.name)+'/loss.csv'
-    with open(f,'a') as file:
-        writer = csv.writer(file)
-        writer.writerow(model.loss_names * 2)
-
     total_iters = 0                # the total number of training iterations
     best_loss = 1000
     for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):    # outer loop for different epochs; we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>
-
-        epoch_GAN, epoch_DR, epoch_DF, epoch_SR, epoch_SF, val_GAN, val_DR, val_DF, val_SF, val_SR  = [], [], [], [], [], [], [], [], [], []
         epoch_start_time = time.time()  # timer for entire epoch
         iter_data_time = time.time()    # timer for data loading per iteration
         epoch_iter = 0                  # the number of training iterations in current epoch, reset to 0 every epoch
@@ -71,11 +64,6 @@ if __name__ == '__main__':
             model.optimize_parameters()           # calculate loss functions, get gradients, update network weights
 
             losses = model.get_current_losses()
-            epoch_GAN.append(losses['G_GAN'])
-            epoch_DR.append(losses['D_real'])
-            epoch_DF.append(losses['D_fake'])
-            epoch_SR.append(losses['S_real'])
-            epoch_SF.append(losses['S_fake'])
 
             if total_iters % opt.print_freq == 0:    # print training losses and save logging information to the disk
                 t_comp = (time.time() - iter_start_time) / opt.batch_size
@@ -88,37 +76,10 @@ if __name__ == '__main__':
                 save_suffix = 'iter_%d' % total_iters if opt.save_by_iter else 'latest'
                 model.save_networks(save_suffix)
 
-        for i, data in enumerate(dataval):
-            # Validation
-            model.set_input(data)
-            with torch.no_grad():
-                model.forward()
-                model.compute_visuals()
-                losses = model.get_current_losses()
-            val_GAN.append(losses['G_GAN'])
-            val_DR.append(losses['D_real'])
-            val_DF.append(losses['D_fake'])
-            val_SR.append(losses['S_real'])
-            val_SF.append(losses['S_fake'])
-
-            iter_data_time = time.time()
         if epoch % opt.save_epoch_freq == 0:              # cache our model every <save_epoch_freq> epochs
             print('saving the model at the end of epoch %d, iters %d' % (epoch, total_iters))
             model.save_networks('latest')
             model.save_networks(epoch)
-
-        if sum(val_SF)/len(val_SF) < best_loss:              # cache our model every <save_epoch_freq> epochs
-            print('saving the model at the end of epoch %d since the validation loss is at a minimum' % (epoch))
-            model.save_networks('best')
-            best_loss = sum(val_SF)/len(val_SF)
-
-        row = [epoch, sum(epoch_GAN)/len(epoch_GAN), sum(epoch_DR)/len(epoch_DR), sum(epoch_DF)/len(epoch_DF),
-                      sum(epoch_SR)/len(epoch_SR), sum(epoch_SF)/len(epoch_SF),
-                      sum(val_GAN)/len(val_GAN), sum(val_DR)/len(val_DR), sum(val_DF)/len(val_DF),
-                      sum(val_SR)/len(val_SR), sum(val_SF)/len(val_SF)]
-        with open(f,'a') as file:
-            writer = csv.writer(file)
-            writer.writerow(row)
 
         model.compute_visuals()
         visualizer.display_current_results(model.get_current_visuals(), epoch, save_result=True)
