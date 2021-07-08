@@ -55,23 +55,23 @@ dataloaders provided. Custom dataloaders can easily be built using the template 
 
 ### Training
 
-Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyper-parameters are defined as default values for each model. If you don't have access to a gpu, add the parameter ```gpu_ids=-1```.
+Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyper-parameters are defined as default values for each model. **If you don't have access to a gpu, add the parameter ```gpu_ids=-1```.**
 
 **Axonal F-actin rings**
 ```
-python3 train.py --dataroot=axons --model=TA-GAN-axons --dataset_mode=mask
+python3 train.py --dataroot=FActinRingsDataset --model=TA-GAN-axons
 ```
 **Dendritic F-actin rings and fibers**
 ```
-python3 train.py --dataroot=dendrites --model=TA-GAN-dendrites --dataset_mode=two_masks
+python3 train.py --dataroot=DendriticFActinDataset --model=TA-GAN-dendrites
 ```
 **Synaptic Proteins**
 ```
-python3 train.py --dataroot=synprot --model=TA-GAN-synprot --dataset_mode=synprot
+python3 train.py --dataroot=SynapticProteins --model=TA-GAN-synprot
 ```
 **Live F-actin** (with pretrained segmentation network)
 ```
-python3 train.py --dataroot=live --model=TA-GAN-live --dataset_mode=live --continue --epoch=pretrained
+python3 train.py --dataroot=LiveFActin --model=TA-GAN-live --continue --epoch=pretrained
 ```
  
 ### Testing
@@ -80,25 +80,25 @@ The following lines can be directly used to test with the provided example data 
 
 **Axonal F-actin rings**
 ```
-python3 test.py --dataroot=axons --model=TA-GAN-axons --dataset_mode=mask --epoch=1000
+python3 test.py --dataroot=FActinRings --model=TA-GAN-axons --dataset_mode=mask --epoch=1000 --name=FActinRings
 ```
 <img src="/figures/axons_test.png">
 
 **Dendritic F-actin rings and fibers**
 ```
-python3 test.py --dataroot=dendrites --model=TA-GAN-dendrites --dataset_mode=dendrites --epoch=500
+python3 test.py --dataroot=DendriticFActin --model=TA-GAN-dendrites --dataset_mode=dendrites --epoch=500 --name=DendriticFActin
 ```
 <img src="/figures/dendrites_test.png">
 
 **Synaptic Proteins**
 ```
-python3 test.py --dataroot=synprot --model=TA-GAN-synprot --dataset_mode=synprot --epoch=1000
+python3 test.py --dataroot=SynapticProteins --model=TA-GAN-synprot --dataset_mode=synprot --epoch=1000 --name=SynapticProteins
 ```
 <img src="/figures/synprot_test.png">
 
 **Live F-actin**
 ```
-python3 test.py --dataroot=live --model=TA-GAN-live --dataset_mode=live --epoch=5000
+python3 test.py --dataroot=LiveFActin --model=TA-GAN-live --dataset_mode=live --epoch=5000 --name=LiveFActin
 ```
 
 To test on your own images, create a folder and add the images to a subfolder inside. Use the parameters ```dataroot=folder_name``` and ```phase=subfolder_name``` to specify where are the images. Make sure the order of the channels and the pixel size corresponds to what the model has been trained with, i.e. use the same dataloader and model for training and testing.
