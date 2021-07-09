@@ -1,7 +1,7 @@
 # TA-GAN
 ### Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy
 
-This repository contains all code required to train and test our super-resolution microscopy image generation algorithm. Sample images and trained weights are included to test the method. The datasets can be downloaded at https://s3.valeria.science/flclab-tagan/index.html. The confocal and STimulated Emission Depletion (STED) microscopy images provided in the dataset were obtained from fixed and living primary cultures of rat hippocampal neurons and acquired on an Abberior Expert Line STED microscope. 
+This repository contains all code required to train and test our super-resolution microscopy image generation algorithm. Sample images and trained weights are included to test the method. The datasets can be downloaded at https://s3.valeria.science/flclab-tagan/index.html. The confocal and STimulated Emission Depletion (STED) microscopy images provided in the dataset were obtained from fixed and live primary cultures of rat hippocampal neurons and acquired on an Abberior Expert Line STED microscope. 
 
 The code is based on conditional generative adversarial networks for image-to-image translation (https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
 
@@ -47,7 +47,7 @@ dataloaders provided. Custom dataloaders can easily be built using the template 
  - mask_dataset : Tiff images with confocal, STED, and the segmentation labels concatenated along the channel axis. 
  - two_masks_dataset : Tiff images with confocal, STED, and two channels of segmentation labels, concatenated along the channel axis.
  - synprot_dataset : Tiff images with 6 channels ordered as [confocal_A, STED_A, confocal_B, STED_B, segmentation_A, segmentation_B]. Note that the confocal images were acquired with bigger pixels than the corresponding STED images (60 nm vs. 15 nm); to allow concatenation along the channel axis, the confocal images are upsampled by a factor of 4 with nearest-neighbor interpolation.
- - live_dataset : Tiff images, with confocal and STED images concatenated along the channel axis. This dataloader concatenates to the input modality (confocal) regions selected from the output modality (STED), along with a binary decision map indicating which regions from the output modality are given to the network. The generator should therefore take three channels as input. Before training, the user should decide the size of those regions by defining the variable *px* (line 66) and the random distribution from which the number of regions *n* is drawn (line 70).
+ - live_dataset : Tiff images, with confocal and STED images concatenated along the channel axis. This dataloader concatenates to the input modality (confocal) regions selected from the output modality (STED), along with a binary decision map indicating which regions from the output modality are given to the network. The generator should therefore take three channels as input. Before training, the user should decide the size of these regions by defining the variable *px* (line 66) and the random distribution from which the number of regions *n* is drawn (line 70).
 
 <img src="/figures/dataset_modes.png">
 
@@ -55,7 +55,7 @@ dataloaders provided. Custom dataloaders can easily be built using the template 
 
 ### Training
 
-Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyper-parameters are defined as default values for each model. **If you don't have access to a gpu, add the parameter ```gpu_ids=-1```.** 
+Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyperparameters are defined as default values for each model. **If you don't have access to a gpu, add the parameter ```gpu_ids=-1```.** 
 
 **Axonal F-actin rings**
 ```
@@ -101,32 +101,32 @@ python3 test.py --dataroot=SynapticProteins --model=TA-GAN-synprot --dataset_mod
 python3 test.py --dataroot=LiveFActin --model=TA-GAN-live --dataset_mode=live --epoch=5000 --name=LiveFActin
 ```
 
-To test on your own images, create a folder and add the images to a subfolder inside. Use the parameters ```dataroot=folder_name``` and ```phase=subfolder_name``` to specify where are the images. Make sure the order of the channels and the pixel size corresponds to what the model has been trained with, i.e. use the same dataloader and model for training and testing.
+To test on your own images, create a folder and add the images to a subfolder inside. Use the parameters ```dataroot=folder_name``` and ```phase=subfolder_name``` to specify where the images are. Make sure the order of the channels and the pixel size corresponds to what the model has been trained with, i.e. use the same dataloader and model for training and testing.
 
 
 ### TA-GAN for modality translation: fixed-cell imaging to live-cell imaging
 
-The TA-GAN architecture can also be used to translate imaging modalities while preserving the content relevant to the biological interpretation of the images. In our brief communication, this is used to translate fixed cell images into live-cells images. 
+The TA-GAN architecture can also be used to translate imaging modalities while preserving the content relevant to the biological interpretation of the images. In our brief communication, this is used to translate fixed-cell images into live-cell images. 
 
-(1) Train the modality translation TA-GAN model by downaloding the dataset 'fixed_live' (https://s3.valeria.science/flclab-tagan/index.html) and running the following line:
+(1) Train the modality translation TA-GAN model by downloading the dataset 'fixed_live' (https://s3.valeria.science/flclab-tagan/index.html) and running the following line:
 ```
 python3 train.py --dataroot=fixed_live --model=TA-GAN-cycle --dataset_mode=fixed_live 
 ```
-(2) Once trained, you can convert fixed cell images into live cells images:
+(2) Once trained, you can convert fixed-cell images into live-cell images:
 ```
 python3 test.py --dataroot=fixed_live --model=TA-GAN-cycle --dataset_mode=fixed_live 
 ```
-The generated images, along with the segmentation labels from the fixed cell images, can then be used to train a segmentation network for live cells. The translated (fixed -> live) images can also be directly downloaded : https://s3.valeria.science/flclab-tagan/index.html. 
+The generated images, along with the segmentation labels from the fixed-cell images, can then be used to train a segmentation network for live cells. The translated (fixed -> live) images can also be directly downloaded : https://s3.valeria.science/flclab-tagan/index.html. 
 
-(3) Once downloaded (or generated using stepd 1 and 2), use the following line to train the segmentation network for live cells:
+(3) Once downloaded (or generated using steps 1 and 2), use the following line to train the segmentation network for live cells:
 ```
 python3 train.py --dataroot=translated_live --model=segmentation --dataset_mode=two_segmentation
 ```
-(4) The segmentation network trained on the translated live-cells images is used to train the TA-GAN model. Copy-paste the trained segmentation model from step 3 to checkpoints/TA-GAN-live (or use the one that is already provided from the Github repository), and run the following line:
+(4) The segmentation network trained on the translated live-cell images is used to train the TA-GAN model. Copy-paste the trained segmentation model from step 3 to checkpoints/TA-GAN-live (or use the one that is already provided from the Github repository), and run the following line:
 ```
 python3 train.py --dataroot=live --model=TA-GAN-live --dataset_mode=live --continue --epoch=pretrained
 ```
-(5) Finally, test the generation of live-cells STED images from confocal images using the following line:
+(5) Finally, test the generation of live-cell STED images from confocal images using the following line:
 ```
 python3 test.py --dataroot=live --model=TA-GAN-live --dataset_mode=live --epoch=5000 --phase=20201130_cs4_ROI2
 ```
