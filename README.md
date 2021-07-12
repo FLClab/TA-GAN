@@ -71,15 +71,16 @@ python3 train.py --dataroot=AxonalRingsDataset --model=TAGAN_AxonalRings
 ```
 **Dendritic F-actin rings and fibers**
 ```
-python3 train.py --dataroot=DendriticFActinDataset --model=TA-GAN-dendrites
+python3 train.py --dataroot=DendriticFActinDataset --model=TAGAN_Dendrites
 ```
 **Synaptic Proteins**
 ```
 python3 train.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot
 ```
 **Live F-actin** (with pretrained segmentation network)
+You first need to download the trained segmentation network for F-actin in live-cell images and save it as checkpoints/LiveFActin/pretrained_net_S.pth
 ```
-python3 train.py --dataroot=LiveFActin --model=TA-GAN-live --continue --epoch=pretrained
+python3 train.py --dataroot=LiveFActinDataset --model=TAGAN_live --continue --epoch=pretrained --name=LiveFActin
 ```
  
 ### Testing
@@ -94,19 +95,19 @@ python3 test.py --dataroot=AxonalRingsDataset --model=TAGAN_AxonalRings --epoch=
 
 **Dendritic F-actin rings and fibers**
 ```
-python3 test.py --dataroot=DendriticFActin --model=TA-GAN-dendrites --dataset_mode=dendrites --epoch=500 --name=DendriticFActin
+python3 test.py --dataroot=DendriticFActinDataset --model=TAGAN_Dendrites --epoch=500 --name=DendriticFActin
 ```
 <img src="/figures/dendrites_test.png">
 
 **Synaptic Proteins**
 ```
-python3 test.py --dataroot=SynapticProteins --model=TA-GAN-synprot --dataset_mode=synprot --epoch=1000 --name=SynapticProteins
+python3 test.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot --epoch=1000 --name=SynapticProteins
 ```
 <img src="/figures/synprot_test.png">
 
 **Live F-actin**
 ```
-python3 test.py --dataroot=LiveFActin --model=TA-GAN-live --dataset_mode=live --epoch=5000 --name=LiveFActin
+python3 test.py --dataroot=LiveFActinDataset --model=TAGAN_live --epoch=5000 --name=LiveFActin --gpu_ids=-1 --phase=20201130_cs4
 ```
 
 To test on your own images, create a folder and add the images to a subfolder inside. Use the parameters ```dataroot=folder_name``` and ```phase=subfolder_name``` to specify where the images are. Make sure the order of the channels and the pixel size corresponds to what the model has been trained with, i.e. use the same dataloader and model for training and testing.
