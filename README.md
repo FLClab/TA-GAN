@@ -7,10 +7,11 @@ The code is based on conditional generative adversarial networks for image-to-im
 
 ### Installation
 
-Clone this repository:
+Clone this repository, then move to its directory:
 
 ```
-git clone https://github.com/FLClab/SR-Generation.git
+git clone https://github.com/FLClab/TA-GAN.git
+cd TA-GAN/
 ```
 
 To make sure all prerequisites are installed, we advise to build and use the dockerfile included:
@@ -19,7 +20,7 @@ To make sure all prerequisites are installed, we advise to build and use the doc
 docker build TAGAN-Docker
 nvidia-docker run -it --rm --user $(id -u) --shm-size=10g pytorch
 ```
-If you are not fmailiar with Docker, you can also install all required packages using the requirements.txt file:
+If you are not familiar with Docker, you can also install all required packages using the requirements.txt file:
 ```
 pip install -r requirements.txt --no-index
 ```
