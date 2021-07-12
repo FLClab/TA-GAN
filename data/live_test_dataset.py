@@ -4,9 +4,13 @@ from data.image_folder import make_dataset
 from PIL import Image
 import numpy
 import torch
+import random
 import tifffile
+import skimage
+from skimage import measure
+from torchvision import transforms
 
-class LiveDataset(BaseDataset):
+class LiveTestDataset(BaseDataset):
     """A dataset class for paired image dataset.
 
     It assumes that the directory '/path/to/data/train' contains image pairs in the form of {A,B}.
@@ -40,25 +44,46 @@ class LiveDataset(BaseDataset):
         """
         # read a image given a random integer index
         AB_path = self.AB_paths[index]
-
-        ABC = Image.open(AB_path).convert('L')#tifffile.imread(AB_path)
+        AB = tifffile.imread(AB_path)
         # split AB image into A and B
-        w, h = ABC.size
-        w2 = int(w / 3)
-        A = ABC.crop((0, 0, w2, h))
-        B = ABC.crop((w2, 0, 2*w2, h))
-        C = ABC.crop((2*w2, 0, w, h))
+        if len(AB.shape) == 4:
+            _, c, h, w = AB.shape
+            w2 = int(w / 2)
+            A = AB[0, 0, :, :]
+            B = AB[1, 0, :, :]
+        elif len(AB.shape) == 3:
+            c, h, w = AB.shape
+            w2 = int(w / 2)
+            A = AB[0, :, :]
+            B = AB[1, :, :]
 
+
+        B = (B-A.min())/(A.max()-A.min()) * 255
+        A = (A-A.min())/(A.max()-A.min()) * 255
+
+        A = Image.fromarray(A)
+        B = Image.fromarray(B)
+
+        # apply the same transform to both A and B
         transform_params = get_params(self.opt, A.size)
         A_transform = get_transform(self.opt, transform_params, grayscale=True)
         B_transform = get_transform(self.opt, transform_params, grayscale=True)
-        C_transform = get_transform(self.opt, transform_params, grayscale=True)
 
         A = A_transform(A)
         B = B_transform(B)
-        C = C_transform(C)
 
-        return {'A': A, 'B': B, 'C': C, 'A_paths': AB_path, 'B_paths': AB_path}
+        # Add channel consisting of real STED crops
+        # First, simplify the confocal to a map of super-pixels
+        px = random.choice([100]) #random.choice([50]) # pixel size                                           ### TRAINED WITH px = 64
+        sup_px_map = skimage.measure.block_reduce(B.numpy()[0], (px,px), numpy.mean)
+        # To choose a fixed number or super pixels:
+        sorted_list = numpy.sort(sup_px_map.ravel())
+        n = 2#(random.random()>0.5) + 1#2#int(random.uniform(0.01,0.5) * len(sorted_list))
+        sup_px_map = Image.fromarray(sup_px_map > sorted_list[-n]).resize((A.shape[2], A.shape[1])) # 0-1
+        tf = transforms.ToTensor()
+        sup_px_map = tf(sup_px_map)# * numpy.random.randint(2)
+
+        return {'confocal': A, 'STED': B, 'image_paths': AB_path, 'decision_map': sup_px_map}
 
     def __len__(self):
         """Return the total number of images in the dataset."""

@@ -193,9 +193,6 @@ class BaseModel(ABC):
                 pass
             elif 'D' in name and self.opt.epoch == 'pretrained':
                 pass
-            elif self.opt.model == 'pix2pix_masks_final' and name in ['S'] and self.opt.isTrain:# and self.opt.continue_train:
-                print('not loading S')
-                pass
             else:
                 if isinstance(name, str):
                     load_filename = '%s_net_%s.pth' % (epoch, name)
