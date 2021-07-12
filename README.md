@@ -13,13 +13,16 @@ Clone this repository:
 git clone https://github.com/FLClab/SR-Generation.git
 ```
 
-To make sure all prerequisites are installed, we advise to build and use the dockerfile included in the Dockerfiles subfolder.
+To make sure all prerequisites are installed, we advise to build and use the dockerfile included:
 
 ```
-docker build Dockerfile
+docker build TAGAN-Docker
 nvidia-docker run -it --rm --user $(id -u) --shm-size=10g pytorch
 ```
-
+If you are not fmailiar with Docker, you can also install all required packages using the requirements.txt file:
+```
+pip install -r requirements.txt --no-index
+```
 
 ## TA-GAN for resolution enhancement
 
