@@ -63,7 +63,7 @@ dataloaders provided. Custom dataloaders can easily be built using the template 
 
 ### Training
 
-Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyperparameters are defined as default values for each model. **If you don't have access to a gpu, add the parameter ```gpu_ids=-1```.** 
+Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyperparameters are defined as default values for each model. **If you don't have access to a gpu, add the parameter ```--gpu_ids=-1```.** 
 
 **Axonal F-actin rings**
 ```
