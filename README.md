@@ -20,7 +20,7 @@ To make sure all prerequisites are installed, we advise to build and use the doc
 docker build TAGAN-Docker
 nvidia-docker run -it --rm --user $(id -u) --shm-size=10g pytorch
 ```
-If you are not familiar with Docker, you can also install build a virtual environment, activate it, and install all required packages using the requirements.txt file:
+If you are not familiar with Docker, you can also build a virtual environment, activate it, and install all required packages using the requirements.txt file:
 ```
 pip install virtualenv
 virtualenv TA-GAN-venv 
