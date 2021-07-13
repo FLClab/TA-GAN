@@ -27,7 +27,6 @@ virtualenv TA-GAN-venv
 source TA-GAN-venv/bin/activate (Linux / Mac OS)
 TA-GAN-venv\Scripts\activate (Windows)
 pip install -r requirements.txt
-pip install torch==1.9.0
 ```
 
 ## TA-GAN for resolution enhancement
