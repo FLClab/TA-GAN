@@ -23,7 +23,7 @@ class TAGANLiveModel(BaseModel):
             the modified parser.
         """
         # changing the default values to match the pix2pix paper (https://phillipi.github.io/pix2pix/)
-        parser.set_defaults(norm='batch', netG='resnet_9blocks', netS='unet_128')
+        parser.set_defaults(norm='batch', netG='resnet_9blocks', netS='unet_128', load_size=512)
         if is_train:
             parser.set_defaults(pool_size=0, gan_mode='vanilla', batch_size=16, niter=5000, niter_decay=0, preprocess='crop_rotation', crop_size=256, save_epoch_freq=100)
             parser.add_argument('--lambda_seg', type=float, default=1.0, help='weight for seg loss')
