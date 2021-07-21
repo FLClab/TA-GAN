@@ -120,7 +120,7 @@ The TA-GAN architecture can also be used to translate imaging modalities while p
 
 (1) Train the modality translation TA-GAN model by downloading the dataset 'fixed_live' (https://s3.valeria.science/flclab-tagan/index.html) and running the following line:
 ```
-python3 train.py --dataroot=fixed_live --model=TA-GAN-cycle --dataset_mode=fixed_live 
+python3 train_cycle.py --dataroot=FixedLiveDataset --model=TAGAN_cycle --dataset_mode=fixed_live 
 ```
 (2) Once trained, you can convert fixed-cell images into live-cell images:
 ```
