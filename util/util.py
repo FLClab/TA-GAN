@@ -97,3 +97,16 @@ def mkdir(path):
     """
     if not os.path.exists(path):
         os.makedirs(path)
+
+def load(output_folder, cuda):
+    """
+    Loads a previous network model from the given folder. This folder should contain : params.net.
+
+    :param output_folder: The path of the folder containing the network
+    :param cuda: Wheter to use CUDA
+
+    :returns : The parameters of the network
+    """
+    net_params = torch.load(os.path.join(output_folder, "params.net"),
+                            map_location=None if cuda else "cpu")
+    return net_params
