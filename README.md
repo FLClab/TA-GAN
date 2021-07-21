@@ -108,7 +108,7 @@ python3 test.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot --epoch
 **Live F-actin**
 You first need to download the trained segmentation network for F-actin in live-cell images [here](https://s3.valeria.science/flclab-tagan/index.html) and save it as checkpoints/LiveFActin/5000_net_S.pth
 ```
-python3 test.py --dataroot=LiveFActinDataset --model=TAGAN_live --epoch=5000 --name=LiveFActin --phase=20201130_cs4 --dataset_mode=live_test --preprocess=center --crop_size=256
+python3 test.py --dataroot=LiveFActinDataset --model=TAGAN_live --epoch=5000 --name=LiveFActin --phase=20201130_cs4 --dataset_mode=live_test --preprocess=center --crop_size=512
 ```
 
 To test on your own images, create a folder and add the images to a subfolder inside. Use the parameters ```dataroot=folder_name``` and ```phase=subfolder_name``` to specify where the images are. Make sure the order of the channels and the pixel size corresponds to what the model has been trained with, i.e. use the same dataloader and model for training and testing.
