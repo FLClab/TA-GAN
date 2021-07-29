@@ -59,6 +59,28 @@ dataloaders provided. Custom dataloaders can easily be built using the template 
 
 <img src="/figures/dataset_modes.png">
 
+## Training and testing on your own images
+
+**A new model MUST be trained for every change in biological context or imaging parameter. You can not apply the models we provide on your images if their acquisition parameters differ in any way.** We strongly believe the method we introduce is applicable to any context, if trained properly. To train a model on a new set of images, you need the following:
+- An extensive set of images that covers everything you could expect to see in your test images. The model won't learn to generate structures it has never encountered in training. 
+- Segmentation annotations for all the training images
+- Computational resources (GPU)
+- A model adapted to your specific use case. The general TA-GAN model can be used here, but you need to specify the number of input and output channels for the generator and the segmentation network to fit your use case (default = 1).
+- A dataloader adapted to your images. We provide a custom dataloader that is heavily commented so that you can easily modify it to fit your needs.
+
+When everything is ready, run the training:
+```
+python3 train.py --dataroot=<DATASET> --model=<MODEL> --dataset_mode=<DATALOADER> 
+```
+The default hyperparameters might not lead to the best results. You should play with the following hyperparameters:
+- ```--niter``` (number of iterations)
+- ```--niter_decay``` (number of iterations with decreasing learning rate)
+- ```--batch_size``` (rule of thumb, use the largest batch size that fits on your GPU)
+- ```--netG``` (architecture of the generator)
+- ```--netS``` (architecture of the segmentation network)
+
+The description and default values for all hyperparameters can be consulted in options/base_options, train_options and test_options.
+
 ## Reproducing the published results
 
 ### Training
