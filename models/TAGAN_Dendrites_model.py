@@ -86,7 +86,6 @@ class TAGANDendritesModel(BaseModel):
     def forward(self):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
         self.fakeSTED = self.netG(self.confocal)
-        print('AAAAAAAAAAAAAAA')
         self.seg_STED = self.netS(self.STED) 
         self.seg_fakeSTED = self.netS(self.fakeSTED)
 
