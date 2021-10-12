@@ -166,3 +166,18 @@ You can change the ```--phase``` parameter for any subfolder in the dataset titl
 
 <img src="/figures/20201130_cs4_ROI2_conf.gif" width="250" height="250"/>  <img src="/figures/20201130_cs4_ROI2_fake.gif" width="250" height="250"/>\
 <img src="/figures/20201130_cs4_ROI1_conf.gif" width="250" height="250"/>  <img src="/figures/20201130_cs4_ROI1_fake.gif" width="250" height="250"/>
+
+# Baselines
+
+<img src="/figures/baselines_v0.png">
+
+## For resolution enhancement / denoising
+- DNCNN : https://github.com/yinhaoz/denoising-fluorescence
+- CARE : https://github.com/CSBDeep/CSBDeep
+- 3D-RCAN : https://github.com/AiviaCommunity/3D-RCAN
+- Pix2Pix : Use the parameter ```--model=pix2pix``` with a paired dataset (low- and high-resolution)
+
+## For modality translation
+- Pix2Pix (paired) : Use the parameter ```--model=pix2pix``` with a paired dataset (different modalities)
+- Cycle-GAN (unpaired) : Use the parameter ```--model=cycle-gan``` with an unpaired dataset (different modalities)
+
