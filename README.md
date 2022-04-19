@@ -146,7 +146,7 @@ python3 train_cycle.py --dataroot=FixedLiveDataset --model=TAGAN_cycle --dataset
 ```
 (2) Once trained, you can convert fixed-cell images into live-cell images:
 ```
-python3 test.py --dataroot=fixed_live --model=TA-GAN-cycle --dataset_mode=fixed_live 
+python3 test.py --dataroot=FixedLiveDataset --model=TAGAN_cycle --dataset_mode=fixed_live --phase=train
 ```
 The generated images, along with the segmentation labels from the fixed-cell images, can then be used to train a segmentation network for live cells. The translated (fixed -> live) images can also be directly downloaded : https://s3.valeria.science/flclab-tagan/index.html. 
 
