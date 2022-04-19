@@ -154,13 +154,13 @@ The generated images, along with the segmentation labels from the fixed-cell ima
 ```
 python3 train.py --dataroot=DomainAdaptedLiveDataset --model=segmentation
 ```
-(4) The segmentation network trained on the translated live-cell images is used to train the TA-GAN model. Copy-paste the trained segmentation model from step 3 to checkpoints/TA-GAN-live (or use the one that is already provided from the Github repository), and run the following line:
+(4) The segmentation network trained on the translated live-cell images is used to train the TA-GAN model. Copy-paste the trained segmentation model from step 3 to checkpoints/TA-GAN-live/net_S_pretrained.pth (or use the one that is already provided from the Github repository), and run the following line:
 ```
-python3 train.py --dataroot=live --model=TA-GAN-live --dataset_mode=live --continue --epoch=pretrained
+python3 train.py --dataroot=LiveFActinDataset --model=TAGAN_live --dataset_mode=live_train --continue --epoch=pretrained
 ```
 (5) Finally, test the generation of live-cell STED images from confocal images using the following line:
 ```
-python3 test.py --dataroot=live --model=TA-GAN-live --dataset_mode=live --epoch=5000 --phase=20201130_cs4_ROI2
+python3 test.py --dataroot=LiveFActinDataset --model=TAGAN_live --dataset_mode=live_test --epoch=5000 --phase=20201130_cs4_ROI2
 ```
 You can change the ```--phase``` parameter for any subfolder in the dataset titled "live" to test on different neurons. 
 
