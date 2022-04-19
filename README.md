@@ -152,7 +152,7 @@ The generated images, along with the segmentation labels from the fixed-cell ima
 
 (3) Once downloaded (or generated using steps 1 and 2), use the following line to train the segmentation network for live cells:
 ```
-python3 train.py --dataroot=translated_live --model=segmentation --dataset_mode=two_segmentation
+python3 train.py --dataroot=DomainAdaptedLiveDataset --model=segmentation
 ```
 (4) The segmentation network trained on the translated live-cell images is used to train the TA-GAN model. Copy-paste the trained segmentation model from step 3 to checkpoints/TA-GAN-live (or use the one that is already provided from the Github repository), and run the following line:
 ```
