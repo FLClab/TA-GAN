@@ -1,11 +1,16 @@
 # TA-GAN
-### Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy
+### Resolution Enhancement with a Task-Assisted GAN to Guide Optical Nanoscopy Image Analysis and Acquisition
 
-This repository contains all code required to train and test our super-resolution microscopy image generation algorithm. Sample images and trained weights are included to test the method. The datasets can be downloaded at https://s3.valeria.science/flclab-tagan/index.html. The confocal and STimulated Emission Depletion (STED) microscopy images provided in the dataset were obtained from fixed and live primary cultures of rat hippocampal neurons and acquired on an Abberior Expert Line STED microscope. 
+This repository contains all code required to train and test the super-resolution microscopy image generation algorithm. Sample images and trained weights are included to test the method. The datasets and trained models can be downloaded at https://s3.valeria.science/flclab-tagan/index.html.
 
 The code is based on conditional generative adversarial networks for image-to-image translation (https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
 
-### Installation
+The README is divided into the following sections
+- [Installation](#installation)
+- 
+
+<a id="installation"></a>
+# Installation
 
 Clone this repository, then move to its directory:
 
