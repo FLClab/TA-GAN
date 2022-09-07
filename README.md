@@ -5,13 +5,27 @@ This repository contains all code required to train and test the super-resolutio
 
 The code is based on conditional generative adversarial networks for image-to-image translation (https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
 
-The README is divided into the following sections
+- [System Requirements](#system)
 - [Installation](#installation)
-- 
+- [Documentation](#documentation)
+- [Citation](#citation)
+
+<a id="system"></a>
+# System requirements
+## Hardware requirements
+Inference can be run on a computer without a GPU in reasonable time, requiring only that the RAM if sufficient for the size of the model and the loaded image. Use the parameter ```gpu-ids=-1``` if the computer has no GPU, ```batch_size=1``` to avoid filling the RAM, and ```crop_size``` to run the inference on smaller crops if the available RAM is insufficient for the complete image. Approximate inference times and RAM requirements are mentionned for each experiment in the section [Documentation/Testing](#testing).
+
+For training TA-GAN, a GPU is necessary to reach reasonable computing times. Approximate training times and RAM requirements are mentionned for each experiment in the section [Documentation/Training](#training).
+
+## Software requirements
+### OS requirements
+The source code was tested on Ubuntu 16.04, Ubuntu 20.04 and CentOS Linux 7.5.1804.
+
+### Python dependencies
+The source code was tested on Python 3.7. All required libraries are listed in the 'requirements.txt' file.
 
 <a id="installation"></a>
 # Installation
-
 Clone this repository, then move to its directory:
 
 ```
@@ -25,6 +39,8 @@ To make sure all prerequisites are installed, we advise to build and use the doc
 docker build TAGAN-Docker
 nvidia-docker run -it --rm --user $(id -u) --shm-size=10g pytorch
 ```
+Building the docker container requires xxx GB of space and xxx minutes on a regular laptop. 
+
 If you are not familiar with Docker, you can also build a virtual environment, activate it, and install all required packages using the requirements.txt file:
 ```
 pip install virtualenv
@@ -34,6 +50,8 @@ TA-GAN-venv\Scripts\activate (Windows)
 pip install -r requirements.txt
 ```
 
+<a id="installation"></a>
+# Documentation
 ## TA-GAN for resolution enhancement
 
 Different models are provided for specific use cases. The results presented in "Task-Assisted GAN for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" were obtained using TA-GAN-axons (F-actin in axons of fixed cultured hippocampal neurons), TA-GAN-dendrites (F-actin in dendrites of fixed cultured hippocampal neurons), TA-GAN-synprot (synaptic proteins Bassoon, Homer-1c and PSD95 in fixed cultured hippocampal neurons) and TA-GAN-live (F-actin in axons and dendrites of living cultured hippocampal neurons).
@@ -88,6 +106,7 @@ The description and default values for all hyperparameters can be consulted in o
 
 ## Reproducing the published results
 
+<a id="training"></a>
 ### Training
 
 Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyperparameters are defined as default values for each model. **If you don't have access to a gpu, add the parameter ```--gpu_ids=-1```. If the only version of Python installed on your system is 3.x, use ```python``` instead of ```python3```.** 
@@ -110,6 +129,7 @@ You first need to download the trained segmentation network for F-actin in live-
 python3 train.py --dataroot=LiveFActinDataset --model=TAGAN_live --dataset_mode=live_train --continue --epoch=pretrained --name=LiveFActin
 ```
  
+<a id="testing"></a>
 ### Testing
 
 The following lines can be directly used to test with the provided example data and the trained models.
@@ -141,7 +161,7 @@ python3 test.py --dataroot=LiveFActinDataset --model=TAGAN_live --epoch=5000 --n
 To test on your own images, create a folder and add the images to a subfolder inside. Use the parameters ```dataroot=folder_name``` and ```phase=subfolder_name``` to specify where the images are. Make sure the order of the channels and the pixel size corresponds to what the model has been trained with, i.e. use the same dataloader and model for training and testing.
 
 
-### TA-GAN for modality translation: fixed-cell imaging to live-cell imaging
+## TA-GAN for modality translation: fixed-cell imaging to live-cell imaging
 
 The TA-GAN architecture can also be used to translate imaging modalities while preserving the content relevant to the biological interpretation of the images. In our brief communication, this is used to translate fixed-cell images into live-cell images. 
 
@@ -172,17 +192,31 @@ You can change the ```--phase``` parameter for any subfolder in the dataset titl
 <img src="/figures/20201130_cs4_ROI2_conf.gif" width="250" height="250"/>  <img src="/figures/20201130_cs4_ROI2_fake.gif" width="250" height="250"/>\
 <img src="/figures/20201130_cs4_ROI1_conf.gif" width="250" height="250"/>  <img src="/figures/20201130_cs4_ROI1_fake.gif" width="250" height="250"/>
 
-# Baselines
+## Baselines
 
 <img src="/figures/baselines_v0.png">
 
-## For resolution enhancement / denoising
+### For resolution enhancement / denoising
 - DNCNN : https://github.com/yinhaoz/denoising-fluorescence
 - CARE : https://github.com/CSBDeep/CSBDeep
 - 3D-RCAN : https://github.com/AiviaCommunity/3D-RCAN
 - Pix2Pix : Use the parameter ```--model=pix2pix``` with a paired dataset (low- and high-resolution)
 
-## For modality translation
+### For modality translation
 - Pix2Pix (paired) : Use the parameter ```--model=pix2pix``` with a paired dataset (different modalities)
 - Cycle-GAN (unpaired) : Use the parameter ```--model=cycle-gan``` with an unpaired dataset (different modalities)
 
+# Citation
+If using, please cite the following paper :
+Bouchard, C., Wiesner, T., Deschênes, A., Bilodeau, A., Lavoie-Cardinal, F., & Gagné, C. (2021). Resolution Enhancement with a Task-Assisted GAN to Guide Optical Nanoscopy Image Analysis and Acquisition. *bioRxiv*.
+
+```
+@article{bouchard2022resolution,
+  title={Resolution Enhancement with a Task-Assisted GAN to Guide Optical Nanoscopy Image Analysis and Acquisition},
+  author={Bouchard, Catherine and Wiesner, Theresa and Desch{\^e}nes, Andr{\'e}anne and Bilodeau, Anthony and Lavoie-Cardinal, Flavie and Gagn{\'e}, Christian},
+  journal={bioRxiv},
+  year={2022},
+  publisher={Cold Spring Harbor Laboratory}
+}
+
+```
