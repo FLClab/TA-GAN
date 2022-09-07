@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.0-base-ubuntu16.04
+FROM nvidia/cuda:11.7.1-base-ubuntu20.04
 
 ENV PATH="/root/miniconda3/bin:${PATH}"
 ARG PATH="/root/miniconda3/bin:${PATH}"
@@ -8,7 +8,6 @@ RUN apt-get update && apt-get install -y \
     curl \
     ca-certificates \
     sudo \
-    git \
     bzip2 \
     libx11-6 \
  && rm -rf /var/lib/apt/lists/*
@@ -91,3 +90,6 @@ RUN pip install pandas
 
 # Install tqdm
 RUN pip install tqdm
+
+# Install tifffile
+RUN pip install tifffile
