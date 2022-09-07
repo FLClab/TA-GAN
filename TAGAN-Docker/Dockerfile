@@ -1,5 +1,8 @@
 FROM nvidia/cuda:10.0-base-ubuntu16.04
 
+ENV PATH="/root/miniconda3/bin:${PATH}"
+ARG PATH="/root/miniconda3/bin:${PATH}"
+
 # Install some basic utilities
 RUN apt-get update && apt-get install -y \
     curl \
@@ -25,7 +28,7 @@ ENV HOME=/home/user
 RUN chmod 777 /home/user
 
 # Install Miniconda
-RUN curl -so ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-4.5.11-Linux-x86_64.sh \
+RUN curl -L -so ~/miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-4.5.11-Linux-x86_64.sh \
  && chmod +x ~/miniconda.sh \
  && ~/miniconda.sh -b -p ~/miniconda \
  && rm ~/miniconda.sh
@@ -80,7 +83,7 @@ RUN pip install --upgrade --force-reinstall pip==9.0.3
 RUN pip install tifffile --disable-pip-version-check
 
 # Install scikit-image and scikit-learn
-RUN pip install --upgrade scikit-image==0.17.2 --disable-pip-version-check
+RUN pip install scikit-image --disable-pip-version-check
 RUN pip install scikit-learn --disable-pip-version-check
 
 # Install pandas
@@ -88,4 +91,3 @@ RUN pip install pandas
 
 # Install tqdm
 RUN pip install tqdm
-
