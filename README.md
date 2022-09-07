@@ -36,10 +36,10 @@ cd TA-GAN/
 To make sure all prerequisites are installed, we advise to build and use the dockerfile included:
 
 ```
-docker build TAGAN-Docker
-nvidia-docker run -it --rm --user $(id -u) --shm-size=10g pytorch
+docker build -t tagan TAGAN-Docker
+docker run -it --rm --user $(id -u) --shm-size=10g tagan
 ```
-Building the docker container requires xxx GB of space and xxx minutes on a regular laptop. 
+Building the docker image requires 4.06 GB of space and around 5 minutes on a regular laptop. The dockerfile was tested on Docker version 20.10.12. For certain older Docker versions, you may need to change the ```docker run``` command to ```nvidia-docker run``` to access a GPU inside the container.
 
 If you are not familiar with Docker, you can also build a virtual environment, activate it, and install all required packages using the requirements.txt file:
 ```
@@ -111,19 +111,19 @@ The description and default values for all hyperparameters can be consulted in o
 
 Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyperparameters are defined as default values for each model. **If you don't have access to a gpu, add the parameter ```--gpu_ids=-1```. If the only version of Python installed on your system is 3.x, use ```python``` instead of ```python3```.** 
 
-**Axonal F-actin rings**
+**Axonal F-actin** (RAM required: ; Training time with default parameters: .)
 ```
 python3 train.py --dataroot=AxonalRingsDataset --model=TAGAN_AxonalRings
 ```
-**Dendritic F-actin rings and fibers**
+**Dendritic F-actin** (RAM required: ; Training time with default parameters: .)
 ```
 python3 train.py --dataroot=DendriticFActinDataset --model=TAGAN_Dendrites
 ```
-**Synaptic Proteins**
+**Synaptic Proteins** (RAM required: ; Training time with default parameters: .) 
 ```
 python3 train.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot
 ```
-**Live F-actin** (with pretrained segmentation network)
+**Live F-actin** (with pretrained segmentation network; RAM required: ; Training time with default parameters: .)
 You first need to download the trained segmentation network for F-actin in live-cell images [here](https://s3.valeria.science/flclab-tagan/index.html) and save it as checkpoints/LiveFActin/pretrained_net_S.pth
 ```
 python3 train.py --dataroot=LiveFActinDataset --model=TAGAN_live --dataset_mode=live_train --continue --epoch=pretrained --name=LiveFActin
