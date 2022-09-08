@@ -109,7 +109,7 @@ The description and default values for all hyperparameters can be consulted in o
 <a id="training"></a>
 ### Training
 
-Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyperparameters are defined as default values for each model. **If you don't have access to a gpu, add the parameter ```--gpu_ids=-1```. If the only version of Python installed on your system is 3.x, use ```python``` instead of ```python3```.** 
+Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyperparameters are defined as default values for each model. **If you don't have access to a gpu, add the parameter ```--gpu_ids=-1```. If the only version of Python installed on your system is 3.x, use ```python``` instead of ```python3```.** Training times were computed on a GeForce RTX 2080 GPU.
 
 **Axonal F-actin** (RAM required with default parameters: 3680 MiB; Training time with default parameters: 2 hours (7 seconds/epoch).)
 ```
@@ -119,11 +119,11 @@ python3 train.py --dataroot=AxonalRingsDataset --model=TAGAN_AxonalRings
 ```
 python3 train.py --dataroot=DendriticFActinDataset --model=TAGAN_Dendrites
 ```
-**Synaptic Proteins** (RAM required with default parameters: ; Training time with default parameters: xx hours (xx seconds/epoch).) 
+**Synaptic Proteins** (RAM required with default parameters: 10606 MiB; Training time with default parameters: 8 hours (29 seconds/epoch).) 
 ```
 python3 train.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot
 ```
-**Live F-actin** (with pretrained segmentation network; RAM required with default parameters: ; Training time with default parameters: .)
+**Live F-actin** (with pretrained segmentation network; RAM required with default parameters: 9690 MiB; Training time with default parameters: 33 hours (24 seconds/epoch).)
 You first need to download the trained segmentation network for F-actin in live-cell images [here](https://s3.valeria.science/flclab-tagan/index.html) and save it as checkpoints/LiveFActin/pretrained_net_S.pth
 ```
 python3 train.py --dataroot=LiveFActinDataset --model=TAGAN_live --dataset_mode=live_train --continue --epoch=pretrained --name=LiveFActin
@@ -140,7 +140,7 @@ python3 test.py --dataroot=AxonalRingsDataset --model=TAGAN_AxonalRings --epoch=
 ```
 <img src="/figures/axons_test.png">
 
-**Dendritic F-actin rings and fibers** (RAM required with default parameters: xx MiB; Inference time on the xx test images: xx seconds.)
+**Dendritic F-actin rings and fibers** (RAM required with default parameters: <5000 MiB; Inference time on the 26 test images: <1 minute.)
 ```
 python3 test.py --dataroot=DendriticFActinDataset --model=TAGAN_Dendrites --epoch=500 --name=DendriticFActin
 ```
@@ -152,7 +152,7 @@ python3 test.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot --epoch
 ```
 <img src="/figures/synprot_test.png">
 
-**Live F-actin** (RAM required with default parameters: xx MiB; Inference time on the xx test images: xx seconds.)
+**Live F-actin** (RAM required with default parameters: 1402 MiB; Inference time on 3 sequences of 30 test images: <10 seconds.)
 You first need to download the trained segmentation network for F-actin in live-cell images [here](https://s3.valeria.science/flclab-tagan/index.html) and save it as checkpoints/LiveFActin/5000_net_S.pth
 ```
 python3 test.py --dataroot=LiveFActinDataset --model=TAGAN_live --epoch=5000 --name=LiveFActin --phase=20201130_cs4 --dataset_mode=live_test --preprocess=center --crop_size=512
