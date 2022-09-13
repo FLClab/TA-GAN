@@ -116,7 +116,7 @@ class TAGANAxonalRingsModel(BaseModel):
         self.loss_G.backward()
 
     def backward_S(self):
-        if self.isTrain and  'mask' in self.opt.dataset_mode:
+        if self.isTrain:
             self.loss_S_real = self.criterionSEG(self.seg_STED, self.seg_GT) * self.opt.lambda_seg # loss between real B segmentation and GT
             self.loss_S_real.backward()
 
