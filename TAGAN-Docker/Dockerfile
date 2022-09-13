@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.7.1-base-ubuntu20.04
+FROM nvidia/cuda:10.0-base-ubuntu16.04
 
 ENV PATH="/root/miniconda3/bin:${PATH}"
 ARG PATH="/root/miniconda3/bin:${PATH}"
@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     curl \
     ca-certificates \
     sudo \
+    git \
     bzip2 \
     libx11-6 \
  && rm -rf /var/lib/apt/lists/*
@@ -66,7 +67,7 @@ RUN pip install tifffile
 
 # Install Requests, a Python library for making HTTP requests
 RUN conda install -y requests=2.19.1 \
- && conda clean -ya
+ && conda clean -y
 
 # Install OpenCV3 Python bindings
 RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \
@@ -90,6 +91,3 @@ RUN pip install pandas
 
 # Install tqdm
 RUN pip install tqdm
-
-# Install tifffile
-RUN pip install tifffile
