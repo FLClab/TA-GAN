@@ -52,6 +52,10 @@ pip install -r requirements.txt
 
 <a id="installation"></a>
 # Documentation
+
+## Pseudocode
+TODO...
+
 ## TA-GAN for resolution enhancement
 
 Different models are provided for specific use cases. The results presented in "Task-Assisted GAN for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" were obtained using TA-GAN-axons (F-actin in axons of fixed cultured hippocampal neurons), TA-GAN-dendrites (F-actin in dendrites of fixed cultured hippocampal neurons), TA-GAN-synprot (synaptic proteins Bassoon, Homer-1c and PSD95 in fixed cultured hippocampal neurons) and TA-GAN-live (F-actin in axons and dendrites of living cultured hippocampal neurons).
@@ -134,21 +138,24 @@ python3 train.py --dataroot=LiveFActinDataset --model=TAGAN_live --dataset_mode=
 
 The following lines can be directly used to test with the provided example data and the trained models.
 
-**Axonal F-actin rings** (RAM required with default parameters: 958 MiB; Inference time on the 52 test images: <5 seconds.)
+**Axonal F-actin rings** (RAM required with default parameters: 958 MiB; Inference time for 52 test images: <5 seconds.)
 ```
 python3 test.py --dataroot=AxonalRingsDataset --model=TAGAN_AxonalRings --epoch=1000 --name=AxonalRings
 ```
 <img src="/figures/axons_test.png">
 
-**Dendritic F-actin rings and fibers** (RAM required with default parameters: <5000 MiB; Inference time on the 26 test images: <1 minute.)
+**Dendritic F-actin rings and fibers** (RAM required with default parameters: <5000 MiB; Inference time for 26 test images: <1 minute.)
 ```
 python3 test.py --dataroot=DendriticFActinDataset --model=TAGAN_Dendrites --epoch=500 --name=DendriticFActin
 ```
 <img src="/figures/dendrites_test.png">
 
-**Synaptic Proteins** (RAM required with default parameters: xx MiB; Inference time on the xx test images: xx seconds.)
+**Synaptic Proteins** (RAM required with default parameters: 10861 MiB; Inference time for 23 test images: <5 minutes.)
+The test images for the Synaptic Proteins dataset are too large to fit on the tested GPU. We added the options ```tophalf``` and ```bottomhalf``` to split the images in two halves as a preprocessing step. The two halves can then be recombined using the function *combine_bottomtop.py* in the /data folder, by first changing the values for the input and output folders.
 ```
-python3 test.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot --epoch=1000 --name=SynapticProteins
+python3 test.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot --epoch=1000 --name=SynapticProteins --preprocess=bottomhalf
+python3 test.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot --epoch=1000 --name=SynapticProteins --preprocess=tophalf
+python3 combine_bottomtop.py
 ```
 <img src="/figures/synprot_test.png">
 
