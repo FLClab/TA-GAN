@@ -67,7 +67,7 @@ RUN pip install tifffile
 
 # Install Requests, a Python library for making HTTP requests
 RUN conda install -y requests=2.19.1 \
- && conda clean -ya
+ && conda clean -y
 
 # Install OpenCV3 Python bindings
 RUN sudo apt-get update && sudo apt-get install -y --no-install-recommends \

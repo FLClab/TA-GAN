@@ -36,10 +36,10 @@ cd TA-GAN/
 To make sure all prerequisites are installed, we advise to build and use the dockerfile included:
 
 ```
-docker build TAGAN-Docker
-nvidia-docker run -it --rm --user $(id -u) --shm-size=10g pytorch
+docker build -t tagan TAGAN-Docker
+docker run -it --rm --user $(id -u) --shm-size=10g tagan
 ```
-Building the docker container requires xxx GB of space and xxx minutes on a regular laptop. 
+Building the docker image requires 4.06 GB of free memory and takes around 10 minutes with a reliable Internet connection. The docker container was tested on Docker versions 20.10.12 and 18.06.0. For Docker version 18.06.0 and older, you may need to change the ```docker run``` command to ```nvidia-docker run``` to access a GPU inside the container.
 
 If you are not familiar with Docker, you can also build a virtual environment, activate it, and install all required packages using the requirements.txt file:
 ```
@@ -109,21 +109,21 @@ The description and default values for all hyperparameters can be consulted in o
 <a id="training"></a>
 ### Training
 
-Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyperparameters are defined as default values for each model. **If you don't have access to a gpu, add the parameter ```--gpu_ids=-1```. If the only version of Python installed on your system is 3.x, use ```python``` instead of ```python3```.** 
+Everything needed to reproduce the results published in "Task-Assisted Generative Adversarial Network for Resolution Enhancement and Modality Translation in Fluorescence Microscopy" is made available. The datasets can be downloaded here: https://s3.valeria.science/flclab-tagan/index.html. After downloading the datasets, run the following lines to train the model on one of the datasets provided. Note that the optimal hyperparameters are defined as default values for each model. **If you don't have access to a gpu, add the parameter ```--gpu_ids=-1```. If the only version of Python installed on your system is 3.x, use ```python``` instead of ```python3```.** Training times were computed on a GeForce RTX 2080 GPU.
 
-**Axonal F-actin rings**
+**Axonal F-actin** (RAM required with default parameters: 3680 MiB; Training time with default parameters: 2 hours (7 seconds/epoch).)
 ```
 python3 train.py --dataroot=AxonalRingsDataset --model=TAGAN_AxonalRings
 ```
-**Dendritic F-actin rings and fibers**
+**Dendritic F-actin** (RAM required with default parameters: 10642 MiB; Training time with default parameters: 9 hours (67 seconds/epoch).)
 ```
 python3 train.py --dataroot=DendriticFActinDataset --model=TAGAN_Dendrites
 ```
-**Synaptic Proteins**
+**Synaptic Proteins** (RAM required with default parameters: 10606 MiB; Training time with default parameters: 8 hours (29 seconds/epoch).) 
 ```
 python3 train.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot
 ```
-**Live F-actin** (with pretrained segmentation network)
+**Live F-actin** (with pretrained segmentation network; RAM required with default parameters: 9690 MiB; Training time with default parameters: 33 hours (24 seconds/epoch).)
 You first need to download the trained segmentation network for F-actin in live-cell images [here](https://s3.valeria.science/flclab-tagan/index.html) and save it as checkpoints/LiveFActin/pretrained_net_S.pth
 ```
 python3 train.py --dataroot=LiveFActinDataset --model=TAGAN_live --dataset_mode=live_train --continue --epoch=pretrained --name=LiveFActin
@@ -134,25 +134,25 @@ python3 train.py --dataroot=LiveFActinDataset --model=TAGAN_live --dataset_mode=
 
 The following lines can be directly used to test with the provided example data and the trained models.
 
-**Axonal F-actin rings**
+**Axonal F-actin rings** (RAM required with default parameters: 958 MiB; Inference time on the 52 test images: <5 seconds.)
 ```
 python3 test.py --dataroot=AxonalRingsDataset --model=TAGAN_AxonalRings --epoch=1000 --name=AxonalRings
 ```
 <img src="/figures/axons_test.png">
 
-**Dendritic F-actin rings and fibers**
+**Dendritic F-actin rings and fibers** (RAM required with default parameters: <5000 MiB; Inference time on the 26 test images: <1 minute.)
 ```
 python3 test.py --dataroot=DendriticFActinDataset --model=TAGAN_Dendrites --epoch=500 --name=DendriticFActin
 ```
 <img src="/figures/dendrites_test.png">
 
-**Synaptic Proteins**
+**Synaptic Proteins** (RAM required with default parameters: xx MiB; Inference time on the xx test images: xx seconds.)
 ```
 python3 test.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot --epoch=1000 --name=SynapticProteins
 ```
 <img src="/figures/synprot_test.png">
 
-**Live F-actin**
+**Live F-actin** (RAM required with default parameters: 1402 MiB; Inference time on 3 sequences of 30 test images: <10 seconds.)
 You first need to download the trained segmentation network for F-actin in live-cell images [here](https://s3.valeria.science/flclab-tagan/index.html) and save it as checkpoints/LiveFActin/5000_net_S.pth
 ```
 python3 test.py --dataroot=LiveFActinDataset --model=TAGAN_live --epoch=5000 --name=LiveFActin --phase=20201130_cs4 --dataset_mode=live_test --preprocess=center --crop_size=512
