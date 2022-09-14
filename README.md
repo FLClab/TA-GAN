@@ -53,8 +53,19 @@ pip install -r requirements.txt
 <a id="installation"></a>
 # Documentation
 
-## Pseudocode
-TODO...
+## Pseudocode for the training algorithm
+        opt, opt_val                      # Training options, validation options
+        dataset = create_dataset(opt)     # Create a dataset given training options
+        dataval = create_dataset(opt_val) # Create a dataset given validation options
+        model = create_model(opt)         # Create a model given training options
+        while (stopping criterion not satisfied)
+            for data in dataset           # Iterate over all batches of data
+                model.set_input(data)     # Unpack batch of data from dataset and apply preprocessing
+                model.calculate_loss()    # Compute loss functions
+                model.get_gradients()     # Get gradients
+                model.optimize_parameters() # Update network weights
+            update_learning_rate()        # Decrease learning rate if decaying lr is selected in options
+        
 
 ## TA-GAN for resolution enhancement
 
