@@ -37,7 +37,7 @@ To make sure all prerequisites are installed, we advise to build and use the doc
 
 ```
 docker build -t tagan TAGAN-Docker
-docker run -it --gpus all --rm --user $(id -u) --shm-size=10g tagan
+docker run -it --gpus all --rm --user $(id -u) --shm-size=10g -v /:/workspace/ tagan
 ```
 Building the docker image requires 4.06 GB of free memory and takes around 10 minutes with a reliable Internet connection. The docker container was tested on Docker versions 20.10.12 and 18.06.0. For Docker version 18.06.0 and older, you may need to change the ```docker run``` command to ```nvidia-docker run``` to access a GPU inside the container.
 
