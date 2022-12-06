@@ -111,7 +111,7 @@ def get_transform(opt, params=None, grayscale=False, method=Image.NEAREST, conve
         transform_list.append(transforms.Lambda(lambda img: __crop_bh(img)))
 
     #if opt.preprocess == 'none': # changed from == 'none' to include images with shapes smaller than crop_size
-    transform_list.append(transforms.Lambda(lambda img: __make_power_2(img, base=4, method=method)))
+    transform_list.append(transforms.Lambda(lambda img: __make_power_2(img, base=16, method=method)))
 
     if not opt.no_flip:
         if params is None:
@@ -153,7 +153,7 @@ def __make_power_2(img, base, method=Image.NEAREST):
         return img
     else:
         __print_size_warning(ow, oh, w, h)
-        return img.resize((w, h), method)
+        return img.crop((0,0,w,h))#img.resize((w, h), method)
 
 
 def __scale_width(img, target_width, method=Image.BICUBIC):
