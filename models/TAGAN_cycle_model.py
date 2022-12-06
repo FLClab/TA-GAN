@@ -63,7 +63,7 @@ class TAGANCycleModel(BaseModel):
         if self.isTrain:
             self.visual_names = ['real_F', 'fake_L', 'rec_F', 'real_L', 'fake_F', 'rec_L', 'seg_F', 'seg_rec_F']
         else:
-            self.visual_names = ['fake_L', 'seg_F']
+            self.visual_names = ['fake_F']
 
         # specify the models you want to save to the disk. The training/test scripts will call <BaseModel.save_networks> and <BaseModel.load_networks>.
         if self.isTrain:
