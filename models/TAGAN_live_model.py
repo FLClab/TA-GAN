@@ -52,6 +52,7 @@ class TAGANLiveModel(BaseModel):
             opt (Option class)-- stores all the experiment flags; needs to be a subclass of BaseOptions
         """
         BaseModel.__init__(self, opt)
+        torch.cuda.empty_cache()
         # specify the training losses you want to print out. The training/test scripts will call <BaseModel.get_current_losses>
         self.loss_names = ['G_GAN', 'D_real', 'D_fake', 'S_fake']
         # specify the images you want to save/display. The training/test scripts will call <BaseModel.get_current_visuals>
@@ -111,13 +112,32 @@ class TAGANLiveModel(BaseModel):
 
     def forward(self):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
-        self.fakeSTED = self.netG(self.input)
         if self.isTrain:
+            self.fakeSTED = self.netG(self.input)
             self.seg_fakeSTED = self.netS(self.fakeSTED)
             self.seg_STED = self.netS(self.STED).detach()
             # Threshold the segmentation map
             self.seg_STED[:,0,:,:] = self.seg_STED[:,0,:,:]>(0.07*2-1)
             self.seg_STED[:,1,:,:] = self.seg_STED[:,1,:,:]>(0.04*2-1)
+
+        else: # Testing
+            self.fakeSTED = torch.zeros((self.opt.num_gens,1,self.input.shape[2],self.input.shape[3]))
+            self.seg_STED = self.netS(self.STED)
+            for i in range(self.opt.num_gens):
+                fakeSTED = self.netG(self.input)
+                self.fakeSTED[i,:,:,:] = fakeSTED
+            print(self.fakeSTED.shape)
+            
+            # Segmentation
+            if 'seg_fakeSTED0' in self.visual_names:
+                self.seg_fakeSTED0 = torch.zeros((self.opt.num_gens,1,self.input.shape[2],self.input.shape[3]))
+                self.seg_fakeSTED1 = torch.zeros((self.opt.num_gens,1,self.input.shape[2],self.input.shape[3]))
+                for i in range(self.opt.num_gens):
+                    seg_fakeSTED = self.netS(fake_STED)
+                    self.seg_fakeSTED0[i,:,:,:] = seg_fakeSTED[:,0,:,:]
+                    self.seg_fakeSTED1[i,:,:,:] = seg_fakeSTED[:,1,:,:]
+                self.seg_fakeSTED0 = torch.mean(self.seg_fakeSTED0, dim=0)
+                self.seg_fakeSTED1 = torch.mean(self.seg_fakeSTED1, dim=0)        
 
 
     def backward_D(self):
