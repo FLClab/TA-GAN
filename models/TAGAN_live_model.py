@@ -3,13 +3,22 @@ from .base_model import BaseModel
 from . import networks
 from torchvision import models, transforms
 import itertools
+import pickle
+from util.util import load
 import numpy
 import tifffile
+import os
+import models.UNet as UNet
 
 class TAGANLiveModel(BaseModel):
-    """ This class implements the TA-GAN model for confocal to STED resolution enhancement for the F-Actin Live dataset.
+    """ This class implements the pix2pix model, for learning a mapping from input images to output images given paired data.
 
-    Original code taken from pix2pix paper: https://arxiv.org/pdf/1611.07004.pdf
+    The model training requires '--dataset_mode aligned' dataset.
+    By default, it uses a '--netG unet256' U-Net generator,
+    a '--netD basic' discriminator (PatchGAN),
+    and a '--gan_mode' vanilla GAN loss (the cross-entropy objective used in the orignal GAN paper).
+
+    pix2pix paper: https://arxiv.org/pdf/1611.07004.pdf
     """
     @staticmethod
     def modify_commandline_options(parser, is_train=True):
@@ -21,13 +30,19 @@ class TAGANLiveModel(BaseModel):
 
         Returns:
             the modified parser.
+
+        For pix2pix, we do not use image buffer
+        The training objective is: GAN Loss + lambda_MSE * ||G(A)-B||_1
+        By default, we use vanilla GAN loss, UNet with batchnorm, and aligned datasets.
         """
         # changing the default values to match the pix2pix paper (https://phillipi.github.io/pix2pix/)
-        parser.set_defaults(norm='batch', netG='resnet_9blocks', netS='unet_128', load_size=512)
+        parser.set_defaults(norm='batch', netG='resnet_9blocks', netS='resnet_6blocks', dataset_mode='aligned', input_nc=1, output_nc=1)
         if is_train:
-            parser.set_defaults(pool_size=0, gan_mode='vanilla', batch_size=16, niter=5000, niter_decay=0, preprocess='crop_rotation', crop_size=256, save_epoch_freq=100)
-            parser.add_argument('--lambda_seg', type=float, default=1.0, help='weight for seg loss')
-            parser.add_argument('--lambda_GAN', type=float, default=10.0, help='weight for GAN loss')
+            parser.set_defaults(pool_size=0, gan_mode='vanilla')
+            parser.add_argument('--lambda_seg', type=float, default=1, help='weight for seg loss')
+            parser.add_argument('--lambda_GAN', type=float, default=1, help='weight for GAN loss')
+        else:
+            parser.add_argument('--num_gens', type=int, default=1, help='number of generations (test only)')
         return parser
 
     def __init__(self, opt):
@@ -40,21 +55,19 @@ class TAGANLiveModel(BaseModel):
         # specify the training losses you want to print out. The training/test scripts will call <BaseModel.get_current_losses>
         self.loss_names = ['G_GAN', 'D_real', 'D_fake', 'S_fake']
         # specify the images you want to save/display. The training/test scripts will call <BaseModel.get_current_visuals>
+        #self.visual_names = ['input', 'real_B', 'seg_rB', 'seg_fB', 'fake_B', 'S', 'seg_GT', 'decision_map']
         self.visual_names = ['input', 'STED', 'fakeSTED']
-        if self.isTrain:
-            self.visual_names.append('seg_STED')
-            self.visual_names.append('seg_fakeSTED')
+        if not self.isTrain:
+            self.isValid = False
 
         # specify the models you want to save to the disk. The training/test scripts will call <BaseModel.save_networks> and <BaseModel.load_networks>
         if self.isTrain:
-            self.model_names = ['G', 'D', 'S']
-        else:  # during test time, only load G and S
-            self.model_names = ['G', 'S']
-        # define networks (generator, discriminator and reference VGG)
+            self.model_names = ['G', 'D']
+        else:  # during test time, only load G
+            self.model_names = ['G']
+        # define networks (generator, discriminator)
         self.netG = networks.define_G(3, opt.output_nc, opt.ngf, opt.netG, opt.norm,
                                       not opt.no_dropout, opt.init_type, opt.init_gain, self.gpu_ids) # not opt.no_dropout
-
-        self.netS = networks.define_S(opt.output_nc, 2, opt.ngf, opt.netS, opt.norm, False, opt.init_type, opt.init_gain, self.gpu_ids)
 
         if self.isTrain:  # define a discriminator; conditional GANs need to take both input and output images; Therefore, #channels for D is input_nc + output_nc
             self.netD = networks.define_D(opt.input_nc+opt.output_nc, opt.ndf, opt.netD,
@@ -65,14 +78,24 @@ class TAGANLiveModel(BaseModel):
             self.criterionGAN = networks.GANLoss(opt.gan_mode).to(self.device)
             self.criterionSEG = torch.nn.MSELoss()
             # initialize optimizers; schedulers will be automatically created by function <BaseModel.setup>.
+            #self.optimizer_G = torch.optim.Adam(itertools.chain(self.netG.parameters(), self.netG2.parameters()), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.optimizer_G = torch.optim.Adam(self.netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.optimizer_D = torch.optim.Adam(self.netD.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+
             self.optimizers.append(self.optimizer_G)
             self.optimizers.append(self.optimizer_D)
 
+        # load network from STEDActinFCNDendrite
+        net_params = load(os.path.join('checkpoints','UNet_Dendrites'), True)
+        trainer_params = pickle.load(open(os.path.join('checkpoints','UNet_Dendrites', "params_trainer.pkl"), "rb"))
+        network = UNet.UNet(in_channels=trainer_params["in_channels"], out_channels=trainer_params["out_channels"],
+                            number_filter=trainer_params["number_filter"], depth=trainer_params["depth"],
+                            size=trainer_params["size"])
+        network.load_state_dict(net_params)
+        self.netS = network.cuda(self.opt.gpu_ids[0])
+
     def set_input(self, input):
         """Unpack input data from the dataloader and perform necessary pre-processing steps.
-
         Parameters:
             input (dict): include the data itself and its metadata information.
         """
@@ -95,6 +118,7 @@ class TAGANLiveModel(BaseModel):
             # Threshold the segmentation map
             self.seg_STED[:,0,:,:] = self.seg_STED[:,0,:,:]>(0.07*2-1)
             self.seg_STED[:,1,:,:] = self.seg_STED[:,1,:,:]>(0.04*2-1)
+
 
     def backward_D(self):
         """Calculate GAN loss for the discriminator"""
