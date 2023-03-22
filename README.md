@@ -139,13 +139,16 @@ python3 train.py --dataroot=DendriticFActinDataset --model=TAGAN_Dendrites
 python3 train.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot
 ```
 **S. Aureus cells**
-TODO
-
+```
+python3 train.py --dataroot=SAureusDataset --model=TAGAN_SAureus
+```
 **Simulated nanodomains**
-TODO
+```
+python3 train.py --dataroot=SimulatedNanodomainsDataset --model=TAGAN_SimulatedNanomdomains
+```
 
 **Live F-actin** (with pretrained segmentation network; RAM required with default parameters: 9690 MiB; Training time with default parameters: 33 hours (24 seconds/epoch).)
-You first need to download the trained segmentation network for F-actin in live-cell images [here](https://s3.valeria.science/flclab-tagan/index.html) and save it as checkpoints/LiveFActin/pretrained_net_S.pth
+First download the trained segmentation network for F-actin in live-cell STED images [here](https://s3.valeria.science/flclab-tagan/index.html) and save it as checkpoints/LiveFActin/pretrained_net_S.pth
 ```
 python3 train.py --dataroot=LiveFActinDataset --model=TAGAN_live --dataset_mode=live_train --continue --epoch=pretrained --name=LiveFActin
 ```
@@ -177,12 +180,16 @@ python3 combine_bottomtop.py
 <img src="/figures/synprot_test.png" width=500>
 
 **S. Aureus cells**
-TODO
+```
+python3 test.py --dataroot=SAureusDataset --model=TAGAN_SAureus --epoch=best --name=SAureus_precise
+```
 
 <img src="/figures/deepbacs_test.png" width=500>
 
 **Simulated nanodomains**
-TODO
+```
+python3 test.py --dataroot=SimulatedNanodomainsDataset --model=TAGAN_SimulatedNanodomains --epoch=400 --name=SimulatedNanodomains
+```
 
 <img src="/figures/nanodomains_test.png" width=500>
 
