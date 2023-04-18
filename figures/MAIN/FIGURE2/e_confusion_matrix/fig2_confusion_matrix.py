@@ -51,5 +51,6 @@ for i, folder in enumerate(folders):
 
 	disp = ConfusionMatrixDisplay.from_predictions(label_list, pred_list, cmap='Blues', normalize='true', colorbar=False, display_labels=['Non-Dividing','Dividing'])
 	disp.ax_.get_images()[0].set_clim(0, 1)
+	plt.tight_layout()
 	plt.savefig(f"{folder}.pdf")
 	plt.savefig(f"{folder}.png")
