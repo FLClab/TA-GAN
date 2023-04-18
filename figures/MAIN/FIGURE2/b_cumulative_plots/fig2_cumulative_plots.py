@@ -62,6 +62,7 @@ for xlabel, range_max, range_step, column, title in zip(xlabels, range_maxs, ran
 	#plt.legend()
 	plt.tight_layout()
 	plt.savefig('computed_stats/{}_{}.pdf'.format(pair, title))
+	plt.savefig('computed_stats/{}_{}.png'.format(pair, title))
 	plt.show()
 
 	plt.close()

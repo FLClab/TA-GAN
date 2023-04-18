@@ -38,6 +38,8 @@ for i, folder in enumerate(folders):
 	label_list = numpy.load('{}_labels.npy'.format(folder))
 	pred_list = numpy.load('{}_preds.npy'.format(folder))
 
+	print(len(label_list))
+
 	cm = confusion_matrix(label_list, pred_list)
 	dc = (2*cm[1,1])/(2*cm[1,1]+cm[0,1]+cm[1,0])
 	acc = (cm[0,0]+cm[1,1])/cm.sum()
