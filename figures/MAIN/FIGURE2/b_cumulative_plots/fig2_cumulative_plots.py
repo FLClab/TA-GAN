@@ -50,9 +50,7 @@ for xlabel, range_max, range_step, column, title in zip(xlabels, range_maxs, ran
 
 			axs[ch].plot(base[:-1], numpy.mean(all_spots,0), c=color, label=label)
 			axs[ch].fill_between(base[:-1], numpy.mean(all_spots,0)-numpy.std(all_spots,0), numpy.mean(all_spots,0)+numpy.std(all_spots,0), color=color, alpha=0.2)
-			se = numpy.std(all_spots, ddof=1, axis=0)# / numpy.sqrt(numpy.size(values))
-			#numpy.save('computed_stats/{}_{}_{}_ch{}'.format(pair,title,folder_name,ch), all_spots)
-			#numpy.save('computed_stats/{}_{}_{}_ch{}_df'.format(pair,title,folder_name,ch), all_values)
+			se = numpy.std(all_spots, ddof=1, axis=0)
 
 		axs[ch].set_xlabel(xlabel)
 		axs[ch].set_ylabel('Cumulative\nfrequency')
