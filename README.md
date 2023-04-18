@@ -79,7 +79,7 @@ Different models are provided for specific use cases. The results presented in "
 - TA-GAN-live : TA-GAN model with two classes semantic segmentation used as the complementary task. For this model, the segmentation network's weights are pre-trained and frozen.
 - TA-GAN : Use this file to create your own TA-GAN model, specific to your datasets and analysis task of interest.
 
-<img src="/figures/network.png">
+<img src="/figures/network.png" width=500>
 
 Figure 1 : TA-GAN training architecture. Three networks are trained in parallel. The circles are the computed losses, with their specific color corresponding to the network they optimize. The segmentation serves as a complementary task compelling the generation of accurate structures, with the segmentation network optimized solely by the segmentation loss of the real STED. The discriminator classifies the input STED as either real or synthetic, conditional to its confocal. The generator is trained by the GAN loss, i.e its ability to fool the discriminator, by a pixel-wise loss comparing the synthetic and real STED, and by the segmentation loss of the synthetic STED.
 
@@ -138,8 +138,17 @@ python3 train.py --dataroot=DendriticFActinDataset --model=TAGAN_Dendrites
 ```
 python3 train.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot
 ```
+**S. Aureus cells**
+```
+python3 train.py --dataroot=SAureusDataset --model=TAGAN_SAureus
+```
+**Simulated nanodomains**
+```
+python3 train.py --dataroot=SimulatedNanodomainsDataset --model=TAGAN_SimulatedNanomdomains
+```
+
 **Live F-actin** (with pretrained segmentation network; RAM required with default parameters: 9690 MiB; Training time with default parameters: 33 hours (24 seconds/epoch).)
-You first need to download the trained segmentation network for F-actin in live-cell images [here](https://s3.valeria.science/flclab-tagan/index.html) and save it as checkpoints/LiveFActin/pretrained_net_S.pth
+First download the trained segmentation network for F-actin in live-cell STED images [here](https://s3.valeria.science/flclab-tagan/index.html) and save it as checkpoints/LiveFActin/pretrained_net_S.pth
 ```
 python3 train.py --dataroot=LiveFActinDataset --model=TAGAN_live --dataset_mode=live_train --continue --epoch=pretrained --name=LiveFActin
 ```
@@ -153,13 +162,13 @@ The following lines can be directly used to test with the provided example data 
 ```
 python3 test.py --dataroot=AxonalRingsDataset --model=TAGAN_AxonalRings --epoch=1000 --name=AxonalRings
 ```
-<img src="/figures/axons_test.png">
+<img src="/figures/axons_test.png" width=500>
 
 **Dendritic F-actin rings and fibers** (RAM required with default parameters: <5000 MiB; Inference time for 26 test images: <1 minute.)
 ```
 python3 test.py --dataroot=DendriticFActinDataset --model=TAGAN_Dendrites --epoch=500 --name=DendriticFActin
 ```
-<img src="/figures/dendrites_test.png">
+<img src="/figures/dendrites_test.png" width=500>
 
 **Synaptic Proteins** (RAM required with default parameters: 10861 MiB; Inference time for 23 test images: <5 minutes.)
 The test images for the Synaptic Proteins dataset are too large to fit on the tested GPU. We added the options ```tophalf``` and ```bottomhalf``` to split the images in two halves as a preprocessing step. The two halves can then be recombined using the function *combine_bottomtop.py* in the /data folder, by first changing the values for the input and output folders.
@@ -168,7 +177,21 @@ python3 test.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot --epoch
 python3 test.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot --epoch=1000 --name=SynapticProteins --preprocess=tophalf
 python3 combine_bottomtop.py
 ```
-<img src="/figures/synprot_test.png">
+<img src="/figures/synprot_test.png" width=500>
+
+**S. Aureus cells**
+```
+python3 test.py --dataroot=SAureusDataset --model=TAGAN_SAureus --epoch=best --name=SAureus_precise
+```
+
+<img src="/figures/deepbacs_test.png" width=500>
+
+**Simulated nanodomains**
+```
+python3 test.py --dataroot=SimulatedNanodomainsDataset --model=TAGAN_SimulatedNanodomains --epoch=400 --name=SimulatedNanodomains
+```
+
+<img src="/figures/nanodomains_test.png" width=500>
 
 **Live F-actin** (RAM required with default parameters: 1402 MiB; Inference time on 3 sequences of 30 test images: <10 seconds.)
 You first need to download the trained segmentation network for F-actin in live-cell images [here](https://s3.valeria.science/flclab-tagan/index.html) and save it as checkpoints/LiveFActin/5000_net_S.pth
@@ -179,7 +202,7 @@ python3 test.py --dataroot=LiveFActinDataset --model=TAGAN_live --epoch=5000 --n
 To test on your own images, create a folder and add the images to a subfolder inside. Use the parameters ```dataroot=folder_name``` and ```phase=subfolder_name``` to specify where the images are. Make sure the order of the channels and the pixel size corresponds to what the model has been trained with, i.e. use the same dataloader and model for training and testing.
 
 
-## TA-GAN for modality translation: fixed-cell imaging to live-cell imaging
+## TA-GAN for domain adaptation: fixed-STED imaging to live-STED imaging
 
 The TA-GAN architecture can also be used to translate imaging modalities while preserving the content relevant to the biological interpretation of the images. In our brief communication, this is used to translate fixed-cell images into live-cell images. 
 
@@ -231,9 +254,9 @@ Bouchard, C., Wiesner, T., Deschênes, A., Bilodeau, A., Lavoie-Cardinal, F., & 
 ```
 @article{bouchard2022resolution,
   title={Resolution Enhancement with a Task-Assisted GAN to Guide Optical Nanoscopy Image Analysis and Acquisition},
-  author={Bouchard, Catherine and Wiesner, Theresa and Desch{\^e}nes, Andr{\'e}anne and Bilodeau, Anthony and Lavoie-Cardinal, Flavie and Gagn{\'e}, Christian},
+  author={Bouchard, Catherine and Wiesner, Theresa and Desch{\^e}nes, Andr{\'e}anne and Bilodeau, Anthony and Turcotte, Benoît and Gagn{\'e}, Christian and Lavoie-Cardinal, Flavie},
   journal={bioRxiv},
-  year={2022},
+  year={2023},
   publisher={Cold Spring Harbor Laboratory}
 }
 

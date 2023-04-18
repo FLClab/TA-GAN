@@ -23,7 +23,7 @@ class TAGANSAureusModel(BaseModel):
 
         """
         
-        parser.set_defaults(norm='batch', netG='resnet_9blocks', dataset_mode='axons', netS='resnet_6blocks', batch_size=8, crop_size=128, preprocess='crop_rotation', name='TAGANAxonalFactin_{}'.format(datetime.date.today()))
+        parser.set_defaults(norm='batch', netG='resnet_9blocks', dataset_mode='saureus', netS='resnet_6blocks', batch_size=8, crop_size=128, preprocess='crop_rotation', name='TAGANSAureus_{}'.format(datetime.date.today()))
         if is_train:
             parser.set_defaults(pool_size=0, gan_mode='vanilla', niter=900, niter_decay=100, batch_size=8, preprocess='crop_rotation', crop_size=128)
             parser.add_argument('--lambda_GAN', type=float, default=1, help='weight for GAN loss')
