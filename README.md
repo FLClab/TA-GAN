@@ -81,7 +81,7 @@ Different models are provided for specific use cases. The results presented in "
 - TA-GAN-live : TA-GAN model with two classes semantic segmentation used as the complementary task. For this model, the segmentation network's weights are pre-trained and frozen.
 - TA-GAN : Use this file to create your own TA-GAN model, specific to your datasets and analysis task of interest.
 
-<img src="/figures/network.png" width=500>
+<img src="/figures/README/network.png" width=500>
 
 Figure 1 : TA-GAN training architecture. Three networks are trained in parallel. The circles are the computed losses, with their specific color corresponding to the network they optimize. The segmentation serves as a complementary task compelling the generation of accurate structures, with the segmentation network optimized solely by the segmentation loss of the real STED. The discriminator classifies the input STED as either real or synthetic, conditional to its confocal. The generator is trained by the GAN loss, i.e its ability to fool the discriminator, by a pixel-wise loss comparing the synthetic and real STED, and by the segmentation loss of the synthetic STED.
 
@@ -164,13 +164,13 @@ The following lines can be directly used to test with the provided example data 
 ```
 python3 test.py --dataroot=AxonalRingsDataset --model=TAGAN_AxonalRings --epoch=1000 --name=AxonalRings
 ```
-<img src="/figures/axons_test.png" width=500>
+<img src="/figures/README/axons_test.png" width=500>
 
 **Dendritic F-actin rings and fibers** (RAM required with default parameters: <5000 MiB; Inference time for 26 test images: <1 minute.)
 ```
 python3 test.py --dataroot=DendriticFActinDataset --model=TAGAN_Dendrites --epoch=500 --name=DendriticFActin
 ```
-<img src="/figures/dendrites_test.png" width=500>
+<img src="/figures/README/dendrites_test.png" width=500>
 
 **Synaptic Proteins** (RAM required with default parameters: 10861 MiB; Inference time for 23 test images: <5 minutes.)
 The test images for the Synaptic Proteins dataset are too large to fit on the tested GPU. We added the options ```tophalf``` and ```bottomhalf``` to split the images in two halves as a preprocessing step. The two halves can then be recombined using the function *combine_bottomtop.py* in the /data folder, by first changing the values for the input and output folders.
@@ -179,21 +179,21 @@ python3 test.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot --epoch
 python3 test.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot --epoch=1000 --name=SynapticProteins --preprocess=tophalf
 python3 combine_bottomtop.py
 ```
-<img src="/figures/synprot_test.png" width=500>
+<img src="/figures/README/synprot_test.png" width=500>
 
 **S. Aureus cells**
 ```
 python3 test.py --dataroot=SAureusDataset --model=TAGAN_SAureus --epoch=best --name=SAureus_precise
 ```
 
-<img src="/figures/deepbacs_test.png" width=500>
+<img src="/figures/README/deepbacs_test.png" width=500>
 
 **Simulated nanodomains**
 ```
 python3 test.py --dataroot=SimulatedNanodomainsDataset --model=TAGAN_SimulatedNanodomains --epoch=400 --name=SimulatedNanodomains
 ```
 
-<img src="/figures/nanodomains_test.png" width=500>
+<img src="/figures/README/nanodomains_test.png" width=500>
 
 **Live F-actin** (RAM required with default parameters: 1402 MiB; Inference time on 3 sequences of 30 test images: <10 seconds.)
 You first need to download the trained segmentation network for F-actin in live-cell images [here](https://s3.valeria.science/flclab-tagan/index.html) and save it as checkpoints/LiveFActin/5000_net_S.pth
@@ -232,12 +232,12 @@ python3 test.py --dataroot=LiveFActinDataset --model=TAGAN_live --dataset_mode=l
 ```
 You can change the ```--phase``` parameter for any subfolder in the dataset titled "live" to test on different regions and neurons. 
 
-<img src="/figures/20201130_cs4_ROI2_conf.gif" width="250" height="250"/>  <img src="/figures/20201130_cs4_ROI2_fake.gif" width="250" height="250"/>\
-<img src="/figures/20201130_cs4_ROI1_conf.gif" width="250" height="250"/>  <img src="/figures/20201130_cs4_ROI1_fake.gif" width="250" height="250"/>
+<img src="/figures/README/20201130_cs4_ROI2_conf.gif" width="250" height="250"/>  <img src="/figures/README/20201130_cs4_ROI2_fake.gif" width="250" height="250"/>\
+<img src="/figures/README/20201130_cs4_ROI1_conf.gif" width="250" height="250"/>  <img src="/figures/README/20201130_cs4_ROI1_fake.gif" width="250" height="250"/>
 
 ## Baselines
 
-<img src="/figures/baselines_v0.png">
+<img src="/figures/README/baselines_v0.png">
 
 ### For resolution enhancement / denoising
 - DNCNN : https://github.com/yinhaoz/denoising-fluorescence
