@@ -97,7 +97,7 @@ dataloaders provided. Custom dataloaders can easily be built using the template 
  - synprot_dataset : Tiff images with 6 channels ordered as [confocal_A, STED_A, confocal_B, STED_B, segmentation_A, segmentation_B]. Note that the confocal images were acquired with bigger pixels than the corresponding STED images (60 nm vs. 15 nm); to allow concatenation along the channel axis, the confocal images are upsampled by a factor of 4 with nearest-neighbor interpolation.
  - live_dataset : Tiff images, with confocal and STED images concatenated along the channel axis. This dataloader concatenates to the input modality (confocal) regions selected from the output modality (STED), along with a binary decision map indicating which regions from the output modality are given to the network. The generator should therefore take three channels as input. Before training, the user should decide the size of these regions by defining the variable *px* (line 66) and the random distribution from which the number of regions *n* is drawn (line 70).
 
-<img src="/figures/dataset_modes.png">
+<img src="/figures/README/dataset_modes.png">
 
 ## Training and testing on your own images
 
@@ -236,14 +236,13 @@ You can change the ```--phase``` parameter for any subfolder in the dataset titl
 <img src="/figures/README/20201130_cs4_ROI1_conf.gif" width="250" height="250"/>  <img src="/figures/README/20201130_cs4_ROI1_fake.gif" width="250" height="250"/>
 
 ## Baselines
-
-<img src="/figures/README/baselines_v0.png">
-
 ### For resolution enhancement / denoising
 - DNCNN : https://github.com/yinhaoz/denoising-fluorescence
 - CARE : https://github.com/CSBDeep/CSBDeep
 - 3D-RCAN : https://github.com/AiviaCommunity/3D-RCAN
 - Pix2Pix : Use the parameter ```--model=pix2pix``` with a paired dataset (low- and high-resolution)
+
+<img src="/figures/README/baselines_v0.png" width=500px>
 
 ### For modality translation
 - Pix2Pix (paired) : Use the parameter ```--model=pix2pix``` with a paired dataset (different modalities)
