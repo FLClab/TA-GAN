@@ -3,6 +3,8 @@
 
 This repository contains all code required to train and test the super-resolution microscopy image generation algorithm. Sample images and trained weights are included to test the method. The datasets and trained models can be downloaded at https://s3.valeria.science/flclab-tagan/index.html.
 
+The [figures](/figures) folder contains the raw data and code to generate all figures from the paper. The images and scripts that were used to get the raw data can be provided upon request, but were too large to be included in this repository.
+
 The code is based on conditional generative adversarial networks for image-to-image translation (https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix).
 
 - [System Requirements](#system)
