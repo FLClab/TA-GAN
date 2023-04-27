@@ -175,8 +175,8 @@ python3 test.py --dataroot=DendriticFActinDataset --model=TAGAN_Dendrites --epoc
 **Synaptic Proteins** (RAM required with default parameters: 10861 MiB; Inference time for 23 test images: <5 minutes.)
 The test images for the Synaptic Proteins dataset are too large to fit on the tested GPU. We added the options ```tophalf``` and ```bottomhalf``` to split the images in two halves as a preprocessing step. The two halves can then be recombined using the function *combine_bottomtop.py* in the /data folder, by first changing the values for the input and output folders.
 ```
-python3 test.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot --epoch=1000 --name=SynapticProteins --preprocess=bottomhalf
-python3 test.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot --epoch=1000 --name=SynapticProteins --preprocess=tophalf
+python3 test.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot --epoch=200 --name=SynapticProteins --preprocess=bottomhalf
+python3 test.py --dataroot=SynapticProteinsDataset --model=TAGAN_Synprot --epoch=200 --name=SynapticProteins --preprocess=tophalf
 python3 combine_bottomtop.py
 ```
 <img src="/figures/README/synprot_test.png" width=500>
