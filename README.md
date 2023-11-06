@@ -250,15 +250,18 @@ You can change the ```--phase``` parameter for any subfolder in the dataset titl
 
 # Citation
 If using, please cite the following paper :
-Bouchard, C., Wiesner, T., Deschênes, A., Bilodeau, A., Lavoie-Cardinal, F., & Gagné, C. (2021). Resolution Enhancement with a Task-Assisted GAN to Guide Optical Nanoscopy Image Analysis and Acquisition. *bioRxiv*.
+Bouchard, C., Wiesner, T., Deschênes, A., Bilodeau, A., Turcotte, B., Gagné, C. & Lavoie-Cardinal, F. (2023). Resolution Enhancement with a Task-Assisted GAN to Guide Optical Nanoscopy Image Analysis and Acquisition. *Nature Machine Intelligence*.
 
 ```
-@article{bouchard2022resolution,
-  title={Resolution Enhancement with a Task-Assisted GAN to Guide Optical Nanoscopy Image Analysis and Acquisition},
-  author={Bouchard, Catherine and Wiesner, Theresa and Desch{\^e}nes, Andr{\'e}anne and Bilodeau, Anthony and Turcotte, Benoît and Gagn{\'e}, Christian and Lavoie-Cardinal, Flavie},
-  journal={bioRxiv},
+@article{bouchard2023resolution,
+  title={Resolution enhancement with a task-assisted GAN to guide optical nanoscopy image analysis and acquisition},
+  author={Bouchard, Catherine and Wiesner, Theresa and Desch{\^e}nes, Andr{\'e}anne and Bilodeau, Anthony and Turcotte, Beno{\^\i}t and Gagn{\'e}, Christian and Lavoie-Cardinal, Flavie},
+  journal={Nature Machine Intelligence},
+  volume={5},
+  number={8},
+  pages={830--844},
   year={2023},
-  publisher={Cold Spring Harbor Laboratory}
+  publisher={Nature Publishing Group UK London}
 }
 
 ```
