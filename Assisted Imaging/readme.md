@@ -1,6 +1,6 @@
 ## Server side
 
-1) Download the trained models '5000_net_G.pth' and '5000_net_S.pth' and save them in checkpoints/LiveFActin.
+1) Download the trained models '5000_net_G.pth' ([link](https://github.com/FLClab/TA-GAN/tree/main/checkpoints/LiveFActin)) and '5000_net_S.pth' ([link](https://zenodo.org/records/7909304)) and save them in checkpoints/LiveFActin.
 2) Build dockerfile 'taganserver':
 
 `sudo docker build -t taganserver .`
