@@ -40,10 +40,10 @@ For controls (acquiring only STED images at every time step), run
 ` python auto_region_select_multiregion_control.py`
 
 3) Follow the instructions, which will ask you to:
-   3.1 Type the name identifying the coverslip
-   3.2 Select the STED configuration window in Imspector, then press enter in the terminal
-   3.3 Select the confocal configuration window in Imspector, then press enter in the terminal
-   3.4 Select tht overview configuration window in Imspector, then press enter in the terminal
-   3.5 Type the name of the overview window (normally '640'), then press enter in the terminal
-   3.6 The overview window should open, select a few regions to image (we always chose three regions for the results in the paper)
-   3.7 Let the microscope and the server do the whole acquisition for you!
+   - 3.1 Type the name identifying the coverslip
+   - 3.2 Select the STED configuration window in Imspector, then press enter in the terminal
+   - 3.3 Select the confocal configuration window in Imspector, then press enter in the terminal
+   - 3.4 Select tht overview configuration window in Imspector, then press enter in the terminal
+   - 3.5 Type the name of the overview window (normally '640'), then press enter in the terminal
+   - 3.6 The overview window should open, select a few regions to image (we always chose three regions for the results in the paper)
+   - 3.7 Let the microscope and the server do the whole acquisition for you!
