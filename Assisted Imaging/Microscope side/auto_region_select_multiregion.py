@@ -32,6 +32,8 @@ id=input('Enter sample region identifier: ')
 px = 100  # pixel size (min. 50)
 ROI = 300 # center region of interest where no STED will be acquired (excpet full STED)
 width, height = 500.0*20*1e-9, 500.0*20*1e-9
+repetitions = 15
+tlim = 60
 
 config_STED = microscope.get_config("Setting STED configuration.")
 config_confocal = microscope.get_config("Setting Confocal configuration.")
@@ -209,8 +211,6 @@ if 0 : #for ROI_idx in range(len(regions_selected)):
     synthetic_allROI[ROI_idx] = synthetic
     print('Computing time on server: {}'.format(time.time() - timepre))
 
-repetitions = 10
-tlim = 60
 # We now enter the loop. All decision maps are empty.
 for r in range(1,repetitions+1):
     # acquire new confocal
@@ -300,9 +300,9 @@ for r in range(1,repetitions+1):
 
     tifffile.imsave(os.path.join(output,'synthetic_allROI{}.tif'.format(r)), ((synthetic_allROI+1)/2*255).astype('uint8'))
 
-    #if tlim-(time.time()-timepre1) > 0:
-        #print('Sleeping for {}'.format(time.time()-timepre1))
-        #time.sleep(tlim-(time.time()-timepre1))
+    if tlim-(time.time()-timepre1) > 0:
+        print('Sleeping for {}'.format(time.time()-timepre1))
+        time.sleep(tlim-(time.time()-timepre1))
 
 # Final STED
 _, STED_stacks, _, _ =  run(config_STED, 0, regions_selected, output, stedimsavepath, rep=repetitions+1)
