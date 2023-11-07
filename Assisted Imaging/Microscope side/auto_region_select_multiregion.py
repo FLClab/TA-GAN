@@ -145,7 +145,7 @@ class VirtualNet(object):
     :param port (int): Port of the network (default: 5000)
     """
 
-    def __init__(self, img, sted, address='172.16.1.170', port=5000): # 172.16.1.170/166
+    def __init__(self, img, sted, address='172.16.1.170', port=5000): 
         self.img = img
         self.sted = sted
         self.address = address
