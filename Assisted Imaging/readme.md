@@ -34,6 +34,8 @@ Parameters that can be played with in the script:
 - repetitions = 15 (number of frames acquired)
 - tlim = 60 (time in seconds between each frame)
 
+Note: don't forget to specify the ip address and port in `VirtalNet()` (line 148 in `auto_region_select_multiregion.py`) to contact the server computer! The port is chosen when running the docker image (`-p 5000:5000` opens port 5000). The ip address can be found by running `ifconfig` on the server. The ip address and port can be changed when the Flask app is launched (line 43 in `server.py`).
+
 For controls (acquiring only STED images at every time step), run 
 ` python auto_region_select_multiregion_control.py`
 
