@@ -1,0 +1,47 @@
+----------------- Options ---------------
+             aspect_ratio: 1.0                           
+               batch_size: 1                             
+                  bicubic: None                          
+          checkpoints_dir: ./checkpoints                 
+                crop_size: 256                           
+                 dataroot: None                          
+             dataset_mode: single                        
+                direction: AtoB                          
+          display_winsize: 256                           
+                    epoch: 5000                          
+                     eval: False                         
+                  gpu_ids: 0                             
+                init_gain: 0.02                          
+                init_type: normal                        
+                 input_nc: 3                             
+                  isTrain: False                         	[default: None]
+                load_iter: 0                             	[default: 0]
+                load_size: 256                           
+         max_dataset_size: inf                           
+                    model: test2                         
+               n_layers_D: 3                             
+                     name: live_input_1902               
+                      ndf: 64                            
+                     netG: resnet_9blocks                
+                     netS: unet_128                      
+                      ngf: 64                            
+                       nl: relu                          
+               no_dropout: False                         
+                  no_flip: False                         
+                     norm: batch                         
+                      nsf: 16                            
+                    ntest: inf                           
+                  num_gen: 10                            
+                 num_test: 50                            
+              num_threads: 0                             
+                       nz: 8                             
+                output_nc: 1                             
+                    phase: test                          
+               preprocess: none                          
+                      psf: None                          
+              results_dir: ./results/                    
+           serial_batches: False                         
+                   suffix:                               
+                 upsample: basic                         
+                  verbose: False                         
+----------------- End -------------------
