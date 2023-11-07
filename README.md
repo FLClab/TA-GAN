@@ -248,6 +248,9 @@ You can change the ```--phase``` parameter for any subfolder in the dataset titl
 - Pix2Pix (paired) : Use the parameter ```--model=pix2pix``` with a paired dataset (different modalities)
 - Cycle-GAN (unpaired) : Use the parameter ```--model=cycle-gan``` with an unpaired dataset (different modalities)
 
+## TA-GAN For Imaging Assistance
+Refer to the [instructions](<./Assisted Imaging/readme.md>) in the Assisted Imaging folder.
+
 # Citation
 If using, please cite the following paper :
 Bouchard, C., Wiesner, T., Deschênes, A., Bilodeau, A., Turcotte, B., Gagné, C. & Lavoie-Cardinal, F. (2023). Resolution Enhancement with a Task-Assisted GAN to Guide Optical Nanoscopy Image Analysis and Acquisition. *Nature Machine Intelligence*.
