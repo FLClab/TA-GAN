@@ -1,0 +1,128 @@
+-e git+https://github.com/FLClab/Abberior-STED.git@d3c79ba8f7b9e11469c4e1317ac054a41cb4f363#egg=abberior
+absl-py==0.13.0
+argon2-cffi @ file:///C:/ci/argon2-cffi_1596828549974/work
+async-generator==1.10
+attrs @ file:///tmp/build/80754af9/attrs_1600298409949/work
+backcall==0.2.0
+bleach @ file:///tmp/build/80754af9/bleach_1600439572647/work
+Brotli==1.0.9
+certifi==2020.6.20
+cffi @ file:///C:/ci/cffi_1600699250966/work
+chardet==3.0.4
+click==8.0.1
+cloudpickle @ file:///home/conda/feedstock_root/build_artifacts/cloudpickle_1598400192773/work
+colorama @ file:///tmp/build/80754af9/colorama_1603211150991/work
+cycler==0.11.0
+Cython==0.29.23
+dash==1.21.0
+dash-core-components==1.17.1
+dash-html-components==1.1.4
+dash-table==4.12.0
+deap==1.3.1
+decorator==4.4.2
+defusedxml==0.6.0
+discord-webhook==0.17.0
+discordwebhook==1.0.3
+docopt==0.6.2
+easygui==0.98.3
+entrypoints==0.3
+Flask==2.0.1
+Flask-Compress==1.10.1
+fonttools==4.33.3
+future==0.18.2
+idna==2.10
+imageio==2.9.0
+importlib-metadata @ file:///tmp/build/80754af9/importlib-metadata_1602276842396/work
+ipykernel @ file:///C:/ci/ipykernel_1596208728219/work/dist/ipykernel-5.3.4-py3-none-any.whl
+ipyparallel @ file:///D:/bld/ipyparallel_1607986881058/work
+ipyplot==1.1.0
+ipython @ file:///C:/ci/ipython_1598883894321/work
+ipython_genutils==0.2.0
+ipywidgets @ file:///tmp/build/80754af9/ipywidgets_1601490159889/work
+itsdangerous==2.0.1
+jax==0.2.18
+jedi @ file:///C:/ci/jedi_1596472767194/work
+Jinja2==3.0.1
+joblib==1.0.1
+jsonschema @ file:///tmp/build/80754af9/jsonschema_1602607155483/work
+jupyter==1.0.0
+jupyter-client @ file:///tmp/build/80754af9/jupyter_client_1601311786391/work
+jupyter-console @ file:///tmp/build/80754af9/jupyter_console_1598884538475/work
+jupyter-core==4.6.3
+jupyterlab-pygments @ file:///tmp/build/80754af9/jupyterlab_pygments_1601490720602/work
+kaleido==0.2.1
+kiwisolver==1.4.3
+MarkupSafe==2.0.1
+matplotlib==3.5.2
+mistune @ file:///C:/ci/mistune_1594373272338/work
+mkl-fft==1.2.0
+mkl-random==1.1.1
+mkl-service==2.3.0
+msvc-runtime==14.27.29016
+nbclient @ file:///tmp/build/80754af9/nbclient_1602783176460/work
+nbconvert @ file:///C:/ci/nbconvert_1601914921407/work
+nbformat @ file:///tmp/build/80754af9/nbformat_1602783287752/work
+nest-asyncio @ file:///tmp/build/80754af9/nest-asyncio_1601499549014/work
+networkx @ file:///home/conda/feedstock_root/build_artifacts/networkx_1617499744980/work
+notebook @ file:///C:/ci/notebook_1601494955742/work
+numpy==1.21.6
+olefile==0.46
+opt-einsum==3.3.0
+packaging==21.3
+pandas @ file:///D:/bld/pandas_1618263797069/work
+pandocfilters==1.4.2
+parso==0.7.0
+patsy==0.5.1
+pickleshare @ file:///C:/ci/pickleshare_1594374056827/work
+Pillow==9.0.1
+pipreqs==0.4.13
+plotly==5.1.0
+prometheus-client==0.8.0
+prompt-toolkit @ file:///tmp/build/80754af9/prompt-toolkit_1602688806899/work
+PyAutoGUI @ file:///D:/bld/pyautogui_1602591096340/work
+pycparser @ file:///tmp/build/80754af9/pycparser_1594388511720/work
+Pygments @ file:///tmp/build/80754af9/pygments_1600458456400/work
+PyMsgBox @ file:///home/conda/feedstock_root/build_artifacts/pymsgbox_1602398310849/work
+pyparsing==3.0.9
+pyperclip==1.8.2
+pyrsistent @ file:///C:/ci/pyrsistent_1600123688363/work
+PyScreeze @ file:///home/conda/feedstock_root/build_artifacts/pyscreeze_1618749600070/work
+-e git+https://github.com/FLClab/audurand_pysted.git@1c1c7284f70c621650b0ae5c85551b028096212e#egg=pysted
+python-dateutil==2.8.2
+PyTweening==1.0.3
+pytz @ file:///home/conda/feedstock_root/build_artifacts/pytz_1612179539967/work
+PyWavelets==1.1.1
+pywin32==227
+pywinpty==0.5.7
+PyYAML==5.3.1
+pyzmq==19.0.2
+qtconsole @ file:///tmp/build/80754af9/qtconsole_1600870028330/work
+QtPy==1.9.0
+requests==2.24.0
+scikit-image==0.17.2
+scikit-learn==0.24.2
+scipy @ file:///C:/bld/scipy_1619562078451/work
+Send2Trash==1.5.0
+shortuuid==1.0.1
+six==1.16.0
+specpy @ file:///C:/Imspector/Versions/16.3.12728-w2043-win64/python/specpy-1.2.3-cp37-cp37m-win_amd64.whl
+statsmodels @ file:///D:/bld/statsmodels_1612273795533/work
+tenacity==8.0.1
+terminado==0.9.1
+testpath==0.4.4
+threadpoolctl==2.1.0
+tifffile==2020.10.1
+torch==1.1.0
+torchvision==0.3.0
+tornado==6.0.4
+tqdm==4.60.0
+traitlets @ file:///tmp/build/80754af9/traitlets_1602787416690/work
+typing_extensions==4.2.0
+urllib3==1.25.11
+wcwidth @ file:///tmp/build/80754af9/wcwidth_1593447189090/work
+webencodings==0.5.1
+Werkzeug==2.0.1
+widgetsnbextension==3.5.1
+wincertstore==0.2
+yarg==0.1.9
+zipp @ file:///tmp/build/80754af9/zipp_1603306325174/work
