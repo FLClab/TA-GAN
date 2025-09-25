@@ -58,7 +58,7 @@ def save_image(image_numpy, image_path):
     """
     #image_pil = Image.fromarray(image_numpy)
     #image_pil.save(image_path)
-    tifffile.imsave(image_path, image_numpy)
+    tifffile.imwrite(image_path, image_numpy)
 
 def print_numpy(x, val=True, shp=False):
     """Print the mean, min, max, median, std, and size of a numpy array

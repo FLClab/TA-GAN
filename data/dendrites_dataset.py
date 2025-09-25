@@ -42,6 +42,7 @@ class DendritesDataset(BaseDataset):
         # split image into confocal and STED
         confocal = Image.fromarray(image[0])
         STED = Image.fromarray(image[1])
+    
         seg_GTrings = Image.fromarray(image[2])
         seg_GTfibers = Image.fromarray(image[3])
 
@@ -50,6 +51,7 @@ class DendritesDataset(BaseDataset):
 
         confocal = image_transform(confocal)
         STED = image_transform(STED)
+
         seg_GTrings = image_transform(seg_GTrings)
         seg_GTfibers = image_transform(seg_GTfibers)
 

@@ -4,6 +4,7 @@ from torch.nn import init
 import functools
 from torch.optim import lr_scheduler
 from torchvision.models import resnet18
+from stedfm import get_pretrained_model_v2
 
 ###############################################################################
 # Helper Functions
@@ -189,6 +190,15 @@ def define_S(input_nc, output_nc, nsf, netS, norm='batch', use_dropout=False, in
         net = ResnetGenerator(input_nc, output_nc, ngf=nsf, norm_layer=norm_layer, use_dropout=False, n_blocks=6, segmentor=True)
     else:
         raise NotImplementedError('Segmentor model name [%s] is not recognized' % netS)
+    return init_net(net, init_type, init_gain, gpu_ids)
+
+def define_lagunita(init_type='normal', init_gain=0.02, gpu_ids=[]):
+    net, _ = get_pretrained_model_v2(
+        name='mae-lightning-small',
+        weights="MAE_SMALL_STED",
+        as_classifier=True,
+        blocks="0"
+    )
     return init_net(net, init_type, init_gain, gpu_ids)
 
 def define_C(input_nc, init_type='normal', init_gain=0.02, gpu_ids=[]):
