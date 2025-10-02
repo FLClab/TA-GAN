@@ -29,7 +29,7 @@ class LAGUNITAModel(BaseModel):
         if is_train:
             parser.set_defaults(pool_size=0, gan_mode='vanilla', niter=500, niter_decay=0, batch_size=32, preprocess='crop_rotation', crop_size=128)
             parser.add_argument('--lambda_GAN', type=float, default=1.0, help='weight for GAN loss')
-            parser.add_argument('--lambda_seg', type=float, default=1.0, help='weight for seg loss')
+            parser.add_argument('--lambda_seg', type=float, default=100.0, help='weight for seg loss')
         return parser
 
     def __init__(self, opt):
@@ -40,9 +40,9 @@ class LAGUNITAModel(BaseModel):
         """
         BaseModel.__init__(self, opt)
         # specify the training losses you want to print out. The training/test scripts will call <BaseModel.get_current_losses>
-        self.loss_names = ['G_GAN', 'D_real', 'D_fake', 'S_real', 'S_fake']
+        self.loss_names = ['G_GAN', 'D_real', 'D_fake', 'S_fake']
         # specify the images you want to save/display. The training/test scripts will call <BaseModel.get_current_visuals>
-        self.visual_names = ['confocal', 'STED', 'fakeSTED', 'seg_STED', 'seg_fakeSTED', 'seg_GT']
+        self.visual_names = ['confocal', 'STED', 'fakeSTED']
 
         # specify the models you want to save to the disk. The training/test scripts will call <BaseModel.save_networks> and <BaseModel.load_networks>
         if self.isTrain:
@@ -62,16 +62,16 @@ class LAGUNITAModel(BaseModel):
         if self.isTrain:
             # define loss functions
             self.criterionGAN = networks.GANLoss(opt.gan_mode).to(self.device)
-            # self.criterionSEG = torch.nn.MSELoss() 
-            self.criterionSEG = NegativeCosineSimilarity()
+            self.criterionSEG = torch.nn.MSELoss() 
+            # self.criterionSEG = NegativeCosineSimilarity()
 
             # initialize optimizers; schedulers will be automatically created by function <BaseModel.setup>.
             self.optimizer_G = torch.optim.Adam(self.netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.optimizer_D = torch.optim.Adam(self.netD.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
-            self.optimizer_S = torch.optim.Adam(self.netS.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+            # self.optimizer_S = torch.optim.Adam(self.netS.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.optimizers.append(self.optimizer_G)
             self.optimizers.append(self.optimizer_D)
-            self.optimizers.append(self.optimizer_S)
+            # self.optimizers.append(self.optimizer_S)
 
     def set_input(self, input):
         """Unpack input data from the dataloader and perform necessary pre-processing steps.
@@ -92,8 +92,10 @@ class LAGUNITAModel(BaseModel):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
         self.fakeSTED = self.netG(self.confocal)
         with torch.no_grad():
+      
             self.seg_STED = self.netS.module.forward_features(self.STED) 
             self.seg_fakeSTED = self.netS.module.forward_features(self.fakeSTED)
+           
 
     def backward_D(self):
         """Calculate GAN loss for the discriminator"""
@@ -121,11 +123,12 @@ class LAGUNITAModel(BaseModel):
 
         # combine loss and calculate gradients
         self.loss_G = self.loss_G_GAN + self.loss_S_fake
-        self.loss_G.backward(retain_graph=True)
+        self.loss_G.backward()
 
     def backward_S(self):
         self.loss_S_real = self.criterionSEG(self.seg_STED, self.seg_GT) * self.opt.lambda_seg # loss between real B segmentation and GT
-        self.loss_S_real.backward(retain_graph=True)
+        self.loss_S_real.backward()
+        
 
     def optimize_parameters(self):
         self.forward()                   # compute fake images: G(A)
@@ -140,8 +143,8 @@ class LAGUNITAModel(BaseModel):
         self.backward_G()                   # calculate gradients for G
         self.optimizer_G.step()             # udpate G's weights
         # update S
-        self.optimizer_S.zero_grad()        # set S's gradients to zero
-        self.backward_S()                   # calculate gradients for S
-        self.optimizer_S.step()             # udpate S's weights
+        # self.optimizer_S.zero_grad()        # set S's gradients to zero
+        # self.backward_S()                   # calculate gradients for S
+        # self.optimizer_S.step()             # udpate S's weights
 
         

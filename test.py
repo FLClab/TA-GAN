@@ -32,7 +32,10 @@ from data import create_dataset
 from models import create_model
 from util.visualizer import save_images
 from util import html
-
+import glob
+from stedfm.DEFAULTS import BASE_PATH
+from data.stedfm_dendrites_dataset import DendriticFActinDataset
+from torch.utils.data import DataLoader
 
 if __name__ == '__main__':
     opt = TestOptions().parse()  # get test options
@@ -42,7 +45,11 @@ if __name__ == '__main__':
     opt.serial_batches = True  # disable data shuffling; comment this line if results on randomly chosen images are needed.
     opt.no_flip = True    # no flip; comment this line if results on flipped images are needed.
     opt.display_id = -1   # no visdom display; the test code saves the results to a HTML file.
-    dataset = create_dataset(opt)  # create a dataset given opt.dataset_mode and other options
+    # dataset = create_dataset(opt)  # create a dataset given opt.dataset_mode and other options
+    files = glob.glob(f"{BASE_PATH}/Datasets/DendriticFActinDataset/valid/*.tif")
+    print(f"[---] Found {len(files)} training files [---]")
+    dataset = DendriticFActinDataset(files)
+    dataset = DataLoader(dataset, batch_size=1, shuffle=True, drop_last=False)
     model = create_model(opt)      # create a model given opt.model and other options
     model.setup(opt)               # regular setup: load and print networks; create schedulers
     # create a website
@@ -54,8 +61,8 @@ if __name__ == '__main__':
     if opt.eval:
         model.eval()
     for i, data in enumerate(dataset):
-        if i >= opt.num_test:  # only apply our model to opt.num_test images.
-            break
+        # if i >= opt.num_test:  # only apply our model to opt.num_test images.
+        #     break
         model.set_input(data)  # unpack data from data loader
         model.test() # run inference
         visuals = model.get_current_visuals()  # get image results

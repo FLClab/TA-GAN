@@ -18,7 +18,8 @@ class DendritesDataset(BaseDataset):
             opt (Option class) -- stores all the experiment flags; needs to be a subclass of BaseOptions
         """
         BaseDataset.__init__(self, opt)
-        self.dir_images = os.path.join(opt.dataroot, opt.phase)  # get the image directory
+        dataroot = "/home-local/Frederic/Datasets/DendriticFActinDataset"
+        self.dir_images = os.path.join(dataroot, opt.phase)  # get the image directory
         self.image_paths = sorted(make_dataset(self.dir_images, opt.max_dataset_size))  # get image paths
         assert(self.opt.load_size >= self.opt.crop_size)   # crop_size should be smaller than the size of loaded image
         self.input_nc = self.opt.output_nc

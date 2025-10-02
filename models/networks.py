@@ -197,7 +197,8 @@ def define_lagunita(init_type='normal', init_gain=0.02, gpu_ids=[]):
         name='mae-lightning-small',
         weights="MAE_SMALL_STED",
         as_classifier=True,
-        blocks="0"
+        blocks="all",
+        global_pool="patch",
     )
     return init_net(net, init_type, init_gain, gpu_ids)
 
