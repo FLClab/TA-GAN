@@ -138,7 +138,19 @@ class BaseOptions():
             if id >= 0:
                 opt.gpu_ids.append(id)
         if len(opt.gpu_ids) > 0:
-            torch.cuda.set_device(opt.gpu_ids[0])
+            # Check if CUDA is available before setting device
+            if torch.cuda.is_available():
+                try:
+                    torch.cuda.set_device(opt.gpu_ids[0])
+                    print(f"Using GPU {opt.gpu_ids[0]}: {torch.cuda.get_device_name(opt.gpu_ids[0])}")
+                except RuntimeError as e:
+                    print(f"Warning: Failed to set CUDA device {opt.gpu_ids[0]}: {e}")
+                    print("Falling back to CPU mode...")
+                    opt.gpu_ids = []
+                    exit()
+            else:
+                print("CUDA is not available. Using CPU mode...")
+                opt.gpu_ids = []
 
         self.opt = opt
         return self.opt
