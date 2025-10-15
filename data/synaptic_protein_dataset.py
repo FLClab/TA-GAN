@@ -1,14 +1,3 @@
-<<<<<<< HEAD
-import numpy as np 
-import matplotlib.pyplot as plt
-import torch 
-from torch import nn 
-from torch.utils.data import Dataset
-
-class SynapticProteinDataset(Dataset):
-    def __init__(self, opt):
-        BaseDataset.__init__(self, opt)
-=======
 import os 
 import numpy 
 import torch 
@@ -55,4 +44,3 @@ if __name__=="__main__":
         task="seg"
     )
     print(dataset[42])
->>>>>>> 853e37a158e4c2b421dc8b89de4bce6bd0b25599
