@@ -37,7 +37,7 @@ if __name__ == '__main__':
     # dataset = create_dataset(opt)  # create a dataset given opt.dataset_mode and other options
 
     # dataset = create_dataset(opt)
-    files = glob.glob(f"{BASE_PATH}/Datasets/DendriticFActinDataset/train/*.tif")
+    files = glob.glob(f"{BASE_PATH}/DendriticFActinDataset/train/*.tif")
     print(f"[---] Found {len(files)} training files [---]")
     dataset = DendriticFActinDataset(files)
     dataset = DataLoader(dataset, batch_size=opt.batch_size, shuffle=True, drop_last=False)
@@ -49,8 +49,8 @@ if __name__ == '__main__':
     #opt_val.batch_size = 1
     opt_val.serial_batches = False  # with this option, it's always the same validatoin image that is saved during training, which helps with seeing the evolution of the performance
     # dataval = create_dataset(opt_val)  # create the validation dataset
-    valid_files = glob.glob(f"{BASE_PATH}/Datasets/DendriticFActinDataset/valid/*.tif")
-    # valid_files = [valid_files[np.random.randint(0, len(valid_files))]]
+    valid_files = glob.glob(f"{BASE_PATH}/DendriticFActinDataset/valid/*.tif")
+    valid_files = [valid_files[np.random.randint(0, len(valid_files))]]
     print(f"[---] Found {len(valid_files)} validation files [---]")
     dataval = DendriticFActinDataset(valid_files)
     dataval = DataLoader(dataval, batch_size=1, shuffle=True, drop_last=False)

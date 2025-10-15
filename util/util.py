@@ -26,7 +26,10 @@ def tensor2im(input_image, imtype=np.uint16):
         #image_numpy = (image_numpy - image_numpy.min())
         # image_numpy = np.rint((image_numpy + 1.0) / 2.0 * 255.0)
         image_numpy = (image_numpy * 255.0).astype(np.uint8)
+<<<<<<< HEAD
       
+=======
+>>>>>>> 853e37a158e4c2b421dc8b89de4bce6bd0b25599
     else:  # if it is a numpy array, do nothing
         image_numpy = input_image
     return image_numpy.astype(imtype)

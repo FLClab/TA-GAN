@@ -374,7 +374,11 @@ class ResnetGenerator(nn.Module):
                       nn.ReLU(True)]
         model += [nn.ReflectionPad2d(3)]
         model += [nn.Conv2d(ngf, output_nc, kernel_size=7, padding=0)]
+<<<<<<< HEAD
         model += [nn.Sigmoid()] # [nn.Tanh()]
+=======
+        model += [nn.Sigmoid()] # [nn.Tanh()]  
+>>>>>>> 853e37a158e4c2b421dc8b89de4bce6bd0b25599
 
         self.model = nn.Sequential(*model)
 
