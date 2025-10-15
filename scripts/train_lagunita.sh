@@ -32,7 +32,7 @@ echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 echo "% Beginning..."
 echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 
-python train.py --model=TAGAN_Dendrites --dataroot=DendriticFActinDataset --batch_size 64
+python train.py --model=LAGUNITA --dataroot=DendriticFActinDataset --batch_size 64
 
 echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 echo "% DONE %"

@@ -79,10 +79,13 @@ class Pix2PixModel(BaseModel):
 
         The option 'direction' can be used to swap images in domain A and domain B.
         """
-        AtoB = self.opt.direction == 'AtoB'
-        self.real_A = input['A' if AtoB else 'B'].to(self.device)
-        self.real_B = input['B' if AtoB else 'A'].to(self.device)
-        self.image_paths = input['A_paths' if AtoB else 'B_paths']
+        # AtoB = self.opt.direction == 'AtoB'
+        self.real_A = input["confocal"].to(self.device)
+        self.real_B = input["STED"].to(self.device)
+        self.image_paths = input["image_paths"]
+        # self.real_A = input['A' if AtoB else 'B'].to(self.device)
+        # self.real_B = input['B' if AtoB else 'A'].to(self.device)
+        # self.image_paths = input['A_paths' if AtoB else 'B_paths']
 
 
     def generate_STD_maps(self):
