@@ -1,0 +1,1 @@
+python train.py --model LAGUNITA --dataroot DendriticFActinDataset --batch_size 8 --checkpoints_dir /home-local/Frederic/baselines/SR-baselines

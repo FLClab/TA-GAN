@@ -25,7 +25,7 @@ class LAGUNITAModel(BaseModel):
 
         """
         
-        parser.set_defaults(norm='batch', netG='resnet_9blocks', netS='resnet_6blocks', dataset_mode='dendrites', batchsize=32, preprocess='flip_rotation', crop_size=128, name='TAGANDendriticFactin_{}'.format(datetime.date.today()))
+        parser.set_defaults(norm='batch', netG='resnet_9blocks', netS='resnet_6blocks', dataset_mode='dendrites', batchsize=32, preprocess='flip_rotation', crop_size=128, name='LALAGAN_{}'.format(datetime.date.today()))
         if is_train:
             parser.set_defaults(pool_size=0, gan_mode='vanilla', niter=500, niter_decay=0, batch_size=32, preprocess='crop_rotation', crop_size=128)
             parser.add_argument('--lambda_GAN', type=float, default=1.0, help='weight for GAN loss')
@@ -62,7 +62,7 @@ class LAGUNITAModel(BaseModel):
         if self.isTrain:
             # define loss functions
             self.criterionGAN = networks.GANLoss(opt.gan_mode).to(self.device)
-            self.criterionSEG = torch.nn.MSELoss() 
+            self.criterionSEG = torch.nn.L1Loss() 
             # self.criterionSEG = NegativeCosineSimilarity()
 
             # initialize optimizers; schedulers will be automatically created by function <BaseModel.setup>.
@@ -85,16 +85,17 @@ class LAGUNITAModel(BaseModel):
         # self.seg_GTrings = input['seg_GTrings'].to(self.device)
         # self.seg_GTfibers = input['seg_GTfibers'].to(self.device)
         # self.seg_GT = torch.cat([self.seg_GTrings, self.seg_GTfibers], dim=1)
-        self.seg_GT = self.netS.module.forward_features(self.STED)
+        if self.isTrain:
+            self.seg_GT = self.netS.module.forward_features(self.STED)
         self.image_paths = input['image_paths']
 
     def forward(self):
         """Run forward pass; called by both functions <optimize_parameters> and <test>."""
         self.fakeSTED = self.netG(self.confocal)
-        with torch.no_grad():
-      
-            self.seg_STED = self.netS.module.forward_features(self.STED) 
-            self.seg_fakeSTED = self.netS.module.forward_features(self.fakeSTED)
+        if self.isTrain:
+            with torch.no_grad():
+                self.seg_STED = self.netS.module.forward_features(self.STED) 
+                self.seg_fakeSTED = self.netS.module.forward_features(self.fakeSTED)
            
 
     def backward_D(self):

@@ -89,6 +89,7 @@ class TAGANDendritesModel(BaseModel):
         self.fakeSTED = self.netG(self.confocal)
         self.seg_STED = self.netS(self.STED) 
         self.seg_fakeSTED = self.netS(self.fakeSTED)
+   
 
     def backward_D(self):
         """Calculate GAN loss for the discriminator"""

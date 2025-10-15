@@ -1,5 +1,5 @@
 from torch.utils.data import Dataset 
-from typing import List, Tuple
+from typing import List, Tuple, Optional, Callable
 import tifffile 
 import torch 
 import numpy as np
@@ -8,8 +8,10 @@ class DendriticFActinDataset(Dataset):
     def __init__(
             self,
             files: List[str],
+            transform: Optional[Callable] = None,
     ) -> None:
         self.files = files 
+        self.transform = transform
 
     def __len__(self) -> int:
         return len(self.files)
@@ -28,6 +30,9 @@ class DendriticFActinDataset(Dataset):
         
         confocal = torch.tensor(confocal[np.newaxis, ...], dtype=torch.float32)
         sted = torch.tensor(sted[np.newaxis, ...], dtype=torch.float32)
+        cat = torch.cat([confocal, sted], dim=0)
+        cat = self.transform(cat) if self.transform is not None else cat
+        confocal, sted = cat[0:1], cat[1:2]
         rings = torch.tensor(rings[np.newaxis, ...], dtype=torch.float32)
         fibers = torch.tensor(fibers[np.newaxis, ...], dtype=torch.float32)
         ground_truth = torch.cat([rings, fibers], dim=0)

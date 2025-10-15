@@ -198,7 +198,7 @@ def define_lagunita(init_type='normal', init_gain=0.02, gpu_ids=[]):
         weights="MAE_SMALL_STED",
         as_classifier=True,
         blocks="all",
-        global_pool="patch",
+        global_pool="token",
     )
     return init_net(net, init_type, init_gain, gpu_ids)
 
@@ -374,7 +374,7 @@ class ResnetGenerator(nn.Module):
                       nn.ReLU(True)]
         model += [nn.ReflectionPad2d(3)]
         model += [nn.Conv2d(ngf, output_nc, kernel_size=7, padding=0)]
-        model += [nn.Tanh()]   #[nn.Sigmoid()]
+        model += [nn.Sigmoid()] # [nn.Tanh()]
 
         self.model = nn.Sequential(*model)
 
@@ -517,9 +517,9 @@ class UnetSkipConnectionBlock(nn.Module):
                                         kernel_size=4, stride=2,
                                         padding=1)
             down = [downconv]
-            up = [uprelu, upconv, nn.Tanh()]
+            up = [uprelu, upconv, nn.Sigmoid()]
             if seg:
-                up = [uprelu, upconv, nn.Tanh()]
+                up = [uprelu, upconv, nn.Sigmoid()]
             model = down + [submodule] + up
         elif innermost:
             upconv = nn.ConvTranspose2d(inner_nc, outer_nc,

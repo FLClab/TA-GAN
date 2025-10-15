@@ -1,0 +1,1 @@
+python train.py --model=pix2pix --dataroot=DendriticFActinDataset --batch_size 64

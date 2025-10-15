@@ -40,7 +40,7 @@ if __name__ == '__main__':
     files = glob.glob(f"{BASE_PATH}/Datasets/DendriticFActinDataset/train/*.tif")
     print(f"[---] Found {len(files)} training files [---]")
     dataset = DendriticFActinDataset(files)
-    dataset = DataLoader(dataset, batch_size=4, shuffle=True, drop_last=False)
+    dataset = DataLoader(dataset, batch_size=opt.batch_size, shuffle=True, drop_last=False)
     dataset_size = len(dataset)    # get the number of images in the dataset.
     opt_val = TrainOptions().parse()           # create options for your validation dataset
     opt_val.phase = 'valid'    # specify where your validation images are saved
@@ -50,7 +50,7 @@ if __name__ == '__main__':
     opt_val.serial_batches = False  # with this option, it's always the same validatoin image that is saved during training, which helps with seeing the evolution of the performance
     # dataval = create_dataset(opt_val)  # create the validation dataset
     valid_files = glob.glob(f"{BASE_PATH}/Datasets/DendriticFActinDataset/valid/*.tif")
-    valid_files = [valid_files[np.random.randint(0, len(valid_files))]]
+    # valid_files = [valid_files[np.random.randint(0, len(valid_files))]]
     print(f"[---] Found {len(valid_files)} validation files [---]")
     dataval = DendriticFActinDataset(valid_files)
     dataval = DataLoader(dataval, batch_size=1, shuffle=True, drop_last=False)
@@ -102,4 +102,5 @@ if __name__ == '__main__':
         visualizer.display_current_results(model.get_current_visuals(), epoch, save_result=True)
 
         print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, opt.niter + opt.niter_decay, time.time() - epoch_start_time))
+        print("\n\n")
         model.update_learning_rate()                     # update learning rates at the end of every epoch.
