@@ -198,7 +198,7 @@ def define_lagunita(init_type='normal', init_gain=0.02, gpu_ids=[]):
         weights="MAE_SMALL_STED",
         as_classifier=True,
         blocks="all",
-        global_pool="token",
+        global_pool="avg",
     )
     return init_net(net, init_type, init_gain, gpu_ids)
 

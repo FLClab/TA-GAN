@@ -4,7 +4,7 @@
 #SBATCH --account=def-flavielc
 #SBATCH --cpus-per-task=6
 #SBATCH --mem=32Gb
-#SBATCH --gres=gpu:1
+#SBATCH --gpus=nvidia_h100_80gb_hbm3_3g.40gb:1
 #SBATCH --output=logs/%x-%A_%a.out
 #SBATCH --mail-user=frbea320@ulaval.ca
 #SBATCH --mail-type=ALL
@@ -15,9 +15,9 @@ export NCCL_IB_GID_INDEX=3
 export TORCH_NCCL_BLOCKING_WAIT=1 #Pytorch Lightning uses the NCCL backend for inter-GPU communication by default. Set this variable to avoid timeout errors.
 
 #### PARAMETERS
-module load python/3.10 scipy-stack
-module load cuda/12.6 cudnn 
-source /home/frbea320/links/projects/def-flavielc/frbea320/phd/bin/activate
+module load python/3.12 scipy-stack
+module load cuda cudnn
+source ~/phd/bin/activate
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
@@ -26,13 +26,13 @@ export CUDA_VISIBLE_DEVICES=$SLURM_LOCALID
 export CUDA_LAUNCH_BLOCKING=1
 
 
-cd ${HOME}/links/projects/def-flavielc/frbea320/TA-GAN
+cd ~/projects/def-flavielc/frbea320/TA-GAN
 
 echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 echo "% Beginning..."
 echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 
-python train.py --model=TAGAN_Dendrites --dataroot=DendriticFActinDataset --batch_size 64
+python train.py --model=pix2pix --dataroot=SynapticProteinsDataset --batch_size 8 --checkpoints_dir=/home/frbea320/scratch/baselines/SR-baselines
 
 echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 echo "% DONE %"
