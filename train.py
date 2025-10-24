@@ -30,6 +30,7 @@ from stedfm.DEFAULTS import BASE_PATH
 import csv
 import torch
 from data.stedfm_dendrites_dataset import DendriticFActinDataset
+from data.synaptic_protein_dataset import SynapticProteinDataset
 from torch.utils.data import DataLoader
 
 if __name__ == '__main__':
@@ -37,11 +38,22 @@ if __name__ == '__main__':
     # dataset = create_dataset(opt)  # create a dataset given opt.dataset_mode and other options
 
     # dataset = create_dataset(opt)
-    files = glob.glob(f"{BASE_PATH}/DendriticFActinDataset/train/*.tif")
-    print(f"[---] Found {len(files)} training files [---]")
-    dataset = DendriticFActinDataset(files)
+
+    ### Dendritic F-actin dataset ###
+    # files = glob.glob(f"{BASE_PATH}/DendriticFActinDataset/train/*.tif")
+    # print(f"[---] Found {len(files)} training files [---]")
+    # dataset = DendriticFActinDataset(files)
+
+    ### Synaptic Protein dataset ### 
+    dataset = SynapticProteinDataset(
+        basepath=f"{BASE_PATH}/Datasets/SynapticProteinsDataset",
+        split="train",
+        task="seg",
+    ) 
+    print(f"[---] Batch size: {opt.batch_size} [---]")
     dataset = DataLoader(dataset, batch_size=opt.batch_size, shuffle=True, drop_last=False)
     dataset_size = len(dataset)    # get the number of images in the dataset.
+
     opt_val = TrainOptions().parse()           # create options for your validation dataset
     opt_val.phase = 'valid'    # specify where your validation images are saved
     opt_val.preprocess = 'center'    # you don't want data-augmentation in validation, unless you're using U-Net, then you might need to crop! If so, just remove this line.
@@ -49,10 +61,18 @@ if __name__ == '__main__':
     #opt_val.batch_size = 1
     opt_val.serial_batches = False  # with this option, it's always the same validatoin image that is saved during training, which helps with seeing the evolution of the performance
     # dataval = create_dataset(opt_val)  # create the validation dataset
-    valid_files = glob.glob(f"{BASE_PATH}/DendriticFActinDataset/valid/*.tif")
-    valid_files = [valid_files[np.random.randint(0, len(valid_files))]]
-    print(f"[---] Found {len(valid_files)} validation files [---]")
-    dataval = DendriticFActinDataset(valid_files)
+
+    ### Dendritic F-actin dataset ###
+    # valid_files = glob.glob(f"{BASE_PATH}/DendriticFActinDataset/valid/*.tif")
+    # valid_files = [valid_files[np.random.randint(0, len(valid_files))]]
+    # dataval = DendriticFActinDataset(valid_files)
+
+    ### Synaptic Protein dataset ### 
+    dataval = SynapticProteinDataset(
+        basepath=f"{BASE_PATH}/Datasets/SynapticProteinsDataset",
+        split="valid",
+        task="seg",
+    ) 
     dataval = DataLoader(dataval, batch_size=1, shuffle=True, drop_last=False)
     dataset_size_val = len(dataval)    # get the number of images in the dataset.
     print('The number of training images = %d' % dataset_size)

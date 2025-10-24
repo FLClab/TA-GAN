@@ -1,8 +1,11 @@
 import os 
-import numpy 
+import numpy as np
 import torch 
 import tifffile 
+import glob
+from typing import Optional, Callable, Tuple
 from torch.utils.data import Dataset 
+from torchvision import transforms
 
 class SynapticProteinDataset(Dataset):
     def __init__(
@@ -23,24 +26,20 @@ class SynapticProteinDataset(Dataset):
     def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor]:
         img_file = self.files[idx]
         data = tifffile.imread(img_file)
-        conf561 = data[0]
-        sted561 = data[1]
-        seg561 = data[2]
-        conf640 = data[3]
-        sted640 = data[4] 
-        seg640 = data[5]
+        conf561 = torch.tensor(data[0] / 255., dtype=torch.float32).unsqueeze(0)
+        sted561 = torch.tensor(data[1] / 255., dtype=torch.float32).unsqueeze(0)
+        seg561 = torch.tensor(data[2] / data[2].max(), dtype=torch.float32).unsqueeze(0)
+        conf640 = torch.tensor(data[3] / 255., dtype=torch.float32).unsqueeze(0) 
+        sted640 = torch.tensor(data[4] / 255., dtype=torch.float32).unsqueeze(0)
+        seg640 = torch.tensor(data[5] / data[4].max(), dtype=torch.float32).unsqueeze(0)
+        conf = conf561 #torch.cat([conf561, conf640], dim=0)
+        sted = sted561 #torch.cat([sted561, sted640], dim=0)
+        seg = seg561 #torch.cat([seg561, seg640], dim=0)
 
-        print(conf561.min(), conf561.max(), conf561.shape)
-        print(sted561.min(), sted561.max(), sted561.shape)
-        print(conf640.min(), conf640.max(), conf640.shape)
-        print(sted640.min(), sted640.max(), sted640.shape)
-        exit()
+        conf = transforms.CenterCrop(224)(conf)
+        sted = transforms.CenterCrop(224)(sted)
+        seg = transforms.CenterCrop(224)(seg)
 
-if __name__=="__main__":
-    dataset = SynapticProteinDataset(
-        basepath="/home/f/frbea320/links/scratch/Datasets/LargeProteinModels/SyntheticAnomalies",
-        split="train",
-        transform=None,
-        task="seg"
-    )
-    print(dataset[42])
+        return  {"confocal": conf, "STED": sted, "spots": seg, "image_paths": img_file}
+
+    
