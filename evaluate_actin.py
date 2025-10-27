@@ -15,7 +15,6 @@ from typing import List, Dict
 import torch 
 from torch import nn 
 from stedfm.decoders import get_decoder 
-from diffusion_model import DDPM 
 from stedfm.configuration import Configuration 
 import argparse 
 from skimage.metrics import peak_signal_noise_ratio, normalized_root_mse

@@ -36,6 +36,7 @@ import glob
 from stedfm.DEFAULTS import BASE_PATH
 from data.stedfm_dendrites_dataset import DendriticFActinDataset
 from torch.utils.data import DataLoader
+from data.synaptic_protein_dataset import SynapticProteinDataset
 
 if __name__ == '__main__':
     opt = TestOptions().parse()  # get test options
@@ -46,9 +47,20 @@ if __name__ == '__main__':
     opt.no_flip = True    # no flip; comment this line if results on flipped images are needed.
     opt.display_id = -1   # no visdom display; the test code saves the results to a HTML file.
     # dataset = create_dataset(opt)  # create a dataset given opt.dataset_mode and other options
+
+    ### Dendritic F-actin dataset ###
     files = glob.glob(f"{BASE_PATH}/Datasets/DendriticFActinDataset/test/*.tif")
     print(f"[---] Found {len(files)} training files [---]")
     dataset = DendriticFActinDataset(files)
+
+    ### Synaptic Protein dataset ### 
+    dataset = SynapticProteinDataset(
+        basepath=f"{BASE_PATH}/Datasets/SynapticProteinsDataset",
+        split="test",
+        task="seg",
+    ) 
+
+
     dataset = DataLoader(dataset, batch_size=1, shuffle=True, drop_last=False)
     model = create_model(opt)      # create a model given opt.model and other options
     model.setup(opt)               # regular setup: load and print networks; create schedulers
