@@ -32,7 +32,7 @@ echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 echo "% Beginning..."
 echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 
-python train.py --model=pix2pix --dataroot=SynapticProteinsDataset --batch_size 8 --checkpoints_dir=/home/frbea320/scratch/baselines/SR-baselines
+python train.py --model=TAGAN_Synprot --input_nc=1 --output_nc=1 --dataroot=SynapticProteinsDataset --batch_size 8 --checkpoints_dir=/home/frbea320/scratch/baselines/SR-baselines
 
 echo "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 echo "% DONE %"
