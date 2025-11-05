@@ -221,6 +221,7 @@ def main():
         for j, (model, path) in enumerate(zip(MODELS, inference_paths)):
             inference_files = glob.glob(f"{path}/*.tif") 
             inference_files = filter_files(files=inference_files, model=model)
+        
             
             assert len(inference_files) == 26, f"Expected 26 files, got {len(inference_files)} for {model}"
             

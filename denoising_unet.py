@@ -296,7 +296,12 @@ class UNet(nn.Module):
             nn.GELU(),
             nn.Linear(time_dim, time_dim)
         )
-        self.label_embed = nn.Embedding(num_classes, time_dim)
+        
+        # Only create label embedding if num_classes is provided
+        if num_classes is not None:
+            self.label_embed = nn.Embedding(num_classes, time_dim)
+        else:
+            self.label_embed = None
 
         self.cond_mlp = nn.Sequential(
             nn.Linear(cond_dim, time_dim),
@@ -381,7 +386,8 @@ class UNet(nn.Module):
             if not isinstance(cond, torch.Tensor):
                 cond = torch.tensor(cond, dtype=torch.float32)
             if self.condition_type == "class":
-                t = t + self.label_embed(cond)
+                if self.label_embed is not None:
+                    t = t + self.label_embed(cond)
             elif self.condition_type == "latent":
                 t = t + self.cond_mlp(cond)
 

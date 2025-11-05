@@ -28,7 +28,7 @@ The third and final step is to characterize the spatial relations between the cl
 The Ripley's K Function will be of great help.
 """
 
-def filter_spots(mask):
+def filter_spots(intensity_image, mask):
         """
         Removes the spots that are too small or too linear (using parameters min_size and min_axis)
         :param mask: 3D binary mask of spots to filter
@@ -37,10 +37,13 @@ def filter_spots(mask):
         out_mask = numpy.copy(mask).astype(bool)
         img = morphology.remove_small_objects(out_mask, min_size=30)
         mask_lab, num = label(img, connectivity=1, return_num=True)
-        mask_props = regionprops(mask_lab)
+        mask_props = regionprops(mask_lab, intensity_image=intensity_image)
         for p in mask_props:
+            if p.mean_intensity < 3:
+                mask_lab[mask_lab == p.label] = 0
             if p.minor_axis_length < 3:
                 mask_lab[mask_lab == p.label] = 0
+
         out_mask = mask_lab > 0
         return out_mask
 
@@ -50,7 +53,7 @@ def detect_spots(img: numpy.ndarray, J_list: List[int] = (3,4), scale_threshold:
     """
     detector = DetectionWavelets(img, J_list, scale_threshold)
     spots_image = detector.computeDetection()
-    filtered_spots = filter_spots(spots_image)
+    filtered_spots = filter_spots(img, spots_image)
     return filtered_spots
 
 

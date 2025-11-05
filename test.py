@@ -37,6 +37,7 @@ from stedfm.DEFAULTS import BASE_PATH
 from data.stedfm_dendrites_dataset import DendriticFActinDataset
 from torch.utils.data import DataLoader
 from data.synaptic_protein_dataset import SynapticProteinDataset
+from data.stedfm_axons_dataset import AxonalRingsDataset
 
 if __name__ == '__main__':
     opt = TestOptions().parse()  # get test options
@@ -49,16 +50,23 @@ if __name__ == '__main__':
     # dataset = create_dataset(opt)  # create a dataset given opt.dataset_mode and other options
 
     ### Dendritic F-actin dataset ###
-    files = glob.glob(f"{BASE_PATH}/Datasets/DendriticFActinDataset/test/*.tif")
+    # files = glob.glob(f"{BASE_PATH}/Datasets/DendriticFActinDataset/test/*.tif")
+    # print(f"[---] Found {len(files)} training files [---]")
+    # dataset = DendriticFActinDataset(files)
+
+    ### Axonal Rings dataset ###
+    files = glob.glob(f"{BASE_PATH}/Datasets/AxonalRingsDataset/test/*.tif")
     print(f"[---] Found {len(files)} training files [---]")
-    dataset = DendriticFActinDataset(files)
+    dataset = AxonalRingsDataset(files)
 
     ### Synaptic Protein dataset ### 
-    dataset = SynapticProteinDataset(
-        basepath=f"{BASE_PATH}/Datasets/SynapticProteinsDataset",
-        split="test",
-        task="seg",
-    ) 
+    # dataset = SynapticProteinDataset(
+    #     basepath=f"{BASE_PATH}/Datasets/SynapticProteinsDataset",
+    #     split="registered_test",
+    #     task="seg",
+    # ) 
+
+    print(f"[---] Found {len(dataset)} files [---]")
 
 
     dataset = DataLoader(dataset, batch_size=1, shuffle=True, drop_last=False)

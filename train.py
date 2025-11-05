@@ -30,6 +30,7 @@ from stedfm.DEFAULTS import BASE_PATH
 import csv
 import torch
 from data.stedfm_dendrites_dataset import DendriticFActinDataset
+from data.stedfm_axons_dataset import AxonalRingsDataset
 from data.synaptic_protein_dataset import SynapticProteinDataset
 from torch.utils.data import DataLoader
 
@@ -44,13 +45,18 @@ if __name__ == '__main__':
     # print(f"[---] Found {len(files)} training files [---]")
     # dataset = DendriticFActinDataset(files)
 
+    ### Axonal Rings dataset ###
+    files = glob.glob(f"{BASE_PATH}/Datasets/AxonalRingsDataset/train/*.tif")
+    print(f"[---] Found {len(files)} training files [---]")
+    dataset = AxonalRingsDataset(files)
+
     ### Synaptic Protein dataset ### 
-    dataset = SynapticProteinDataset(
-        basepath=f"{BASE_PATH}/Datasets/SynapticProteinsDataset",
-        split="train",
-        task="seg",
-    ) 
-    print(f"[---] Batch size: {opt.batch_size} [---]")
+    # dataset = SynapticProteinDataset(
+    #     basepath=f"{BASE_PATH}/Datasets/SynapticProteinsDataset",
+    #     split="train",
+    #     task="seg",
+    # ) 
+    # print(f"[---] Batch size: {opt.batch_size} [---]")
     dataset = DataLoader(dataset, batch_size=opt.batch_size, shuffle=True, drop_last=False)
     dataset_size = len(dataset)    # get the number of images in the dataset.
 
@@ -67,12 +73,17 @@ if __name__ == '__main__':
     # valid_files = [valid_files[np.random.randint(0, len(valid_files))]]
     # dataval = DendriticFActinDataset(valid_files)
 
+    ### Axonal Rings dataset ###
+    valid_files = glob.glob(f"{BASE_PATH}/Datasets/AxonalRingsDataset/valid/*.tif")
+    print(f"[---] Found {len(valid_files)} validation files [---]")
+    dataval = AxonalRingsDataset(valid_files)
+
     ### Synaptic Protein dataset ### 
-    dataval = SynapticProteinDataset(
-        basepath=f"{BASE_PATH}/Datasets/SynapticProteinsDataset",
-        split="valid",
-        task="seg",
-    ) 
+    # dataval = SynapticProteinDataset(
+    #     basepath=f"{BASE_PATH}/Datasets/SynapticProteinsDataset",
+    #     split="valid",
+    #     task="seg",
+    # ) 
     dataval = DataLoader(dataval, batch_size=1, shuffle=True, drop_last=False)
     dataset_size_val = len(dataval)    # get the number of images in the dataset.
     print('The number of training images = %d' % dataset_size)
@@ -84,7 +95,8 @@ if __name__ == '__main__':
 
     total_iters = 0                # the total number of training iterations
     best_loss = 1000
-    for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):    # outer loop for different epochs; we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>
+    #for epoch in range(opt.epoch_count, opt.niter + opt.niter_decay + 1):    # outer loop for different epochs; we save the model by <epoch_count>, <epoch_count>+<save_latest_freq>
+    for epoch in range(500):
         epoch_start_time = time.time()  # timer for entire epoch
         iter_data_time = time.time()    # timer for data loading per iteration
         epoch_iter = 0                  # the number of training iterations in current epoch, reset to 0 every epoch
