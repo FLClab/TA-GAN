@@ -36,7 +36,7 @@ class TAGANLiveModel(BaseModel):
         By default, we use vanilla GAN loss, UNet with batchnorm, and aligned datasets.
         """
         # changing the default values to match the pix2pix paper (https://phillipi.github.io/pix2pix/)
-        parser.set_defaults(norm='batch', netG='resnet_9blocks', netS='resnet_6blocks', dataset_mode='aligned', input_nc=1, output_nc=1)
+        parser.set_defaults(norm='batch', netG='resnet_9blocks', netS='unet_128', dataset_mode='aligned', input_nc=1, output_nc=1)
         if is_train:
             parser.set_defaults(pool_size=0, gan_mode='vanilla')
             parser.add_argument('--lambda_seg', type=float, default=1, help='weight for seg loss')
@@ -56,19 +56,20 @@ class TAGANLiveModel(BaseModel):
         # specify the training losses you want to print out. The training/test scripts will call <BaseModel.get_current_losses>
         self.loss_names = ['G_GAN', 'D_real', 'D_fake', 'S_fake']
         # specify the images you want to save/display. The training/test scripts will call <BaseModel.get_current_visuals>
-        #self.visual_names = ['input', 'real_B', 'seg_rB', 'seg_fB', 'fake_B', 'S', 'seg_GT', 'decision_map']
-        self.visual_names = ['input', 'STED', 'fakeSTED']
+        #self.visual_names = ['seg_STED', 'STED']
+        self.visual_names = ['input', 'STED', 'fakeSTED', 'seg_STED', 'seg_fakeSTED0', 'seg_fakeSTED1']
         if not self.isTrain:
             self.isValid = False
 
         # specify the models you want to save to the disk. The training/test scripts will call <BaseModel.save_networks> and <BaseModel.load_networks>
         if self.isTrain:
-            self.model_names = ['G', 'D']
+            self.model_names = ['G', 'D', 'S']
         else:  # during test time, only load G
-            self.model_names = ['G']
+            self.model_names = ['G', 'S']
         # define networks (generator, discriminator)
         self.netG = networks.define_G(3, opt.output_nc, opt.ngf, opt.netG, opt.norm,
                                       not opt.no_dropout, opt.init_type, opt.init_gain, self.gpu_ids) # not opt.no_dropout
+        self.netS = networks.define_S(1, 2, opt.ngf, opt.netS, opt.norm, False, opt.init_type, opt.init_gain, self.gpu_ids)
 
         if self.isTrain:  # define a discriminator; conditional GANs need to take both input and output images; Therefore, #channels for D is input_nc + output_nc
             self.netD = networks.define_D(opt.input_nc+opt.output_nc, opt.ndf, opt.netD,
@@ -82,18 +83,11 @@ class TAGANLiveModel(BaseModel):
             #self.optimizer_G = torch.optim.Adam(itertools.chain(self.netG.parameters(), self.netG2.parameters()), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.optimizer_G = torch.optim.Adam(self.netG.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
             self.optimizer_D = torch.optim.Adam(self.netD.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
+            self.optimizer_S = torch.optim.Adam(self.netS.parameters(), lr=opt.lr, betas=(opt.beta1, 0.999))
 
             self.optimizers.append(self.optimizer_G)
             self.optimizers.append(self.optimizer_D)
-
-        # load network from STEDActinFCNDendrite
-        net_params = load(os.path.join('checkpoints','UNet_Dendrites'), True)
-        trainer_params = pickle.load(open(os.path.join('checkpoints','UNet_Dendrites', "params_trainer.pkl"), "rb"))
-        network = UNet.UNet(in_channels=trainer_params["in_channels"], out_channels=trainer_params["out_channels"],
-                            number_filter=trainer_params["number_filter"], depth=trainer_params["depth"],
-                            size=trainer_params["size"])
-        network.load_state_dict(net_params)
-        self.netS = network.cuda(self.opt.gpu_ids[0])
+            self.optimizers.append(self.optimizer_S)
 
     def set_input(self, input):
         """Unpack input data from the dataloader and perform necessary pre-processing steps.
@@ -121,23 +115,22 @@ class TAGANLiveModel(BaseModel):
             self.seg_STED[:,1,:,:] = self.seg_STED[:,1,:,:]>(0.04*2-1)
 
         else: # Testing
-            self.fakeSTED = torch.zeros((self.opt.num_gens,1,self.input.shape[2],self.input.shape[3]))
-            self.seg_STED = self.netS(self.STED)
+            self.fakeSTED = torch.zeros((self.opt.num_gens,1,self.input.shape[2],self.input.shape[3])).cuda()
+            self.seg_STED = self.netS(self.STED[:,:,58:442,58:442])
             for i in range(self.opt.num_gens):
                 fakeSTED = self.netG(self.input)
                 self.fakeSTED[i,:,:,:] = fakeSTED
-            print(self.fakeSTED.shape)
             
             # Segmentation
             if 'seg_fakeSTED0' in self.visual_names:
-                self.seg_fakeSTED0 = torch.zeros((self.opt.num_gens,1,self.input.shape[2],self.input.shape[3]))
-                self.seg_fakeSTED1 = torch.zeros((self.opt.num_gens,1,self.input.shape[2],self.input.shape[3]))
+                self.seg_fakeSTED0 = torch.zeros((self.opt.num_gens,1,384,384))
+                self.seg_fakeSTED1 = torch.zeros((self.opt.num_gens,1,384,384))
                 for i in range(self.opt.num_gens):
-                    seg_fakeSTED = self.netS(fake_STED)
+                    seg_fakeSTED = self.netS(self.fakeSTED[i,:,58:442,58:442].unsqueeze(0))
                     self.seg_fakeSTED0[i,:,:,:] = seg_fakeSTED[:,0,:,:]
                     self.seg_fakeSTED1[i,:,:,:] = seg_fakeSTED[:,1,:,:]
-                self.seg_fakeSTED0 = torch.mean(self.seg_fakeSTED0, dim=0)
-                self.seg_fakeSTED1 = torch.mean(self.seg_fakeSTED1, dim=0)        
+                #self.seg_fakeSTED0 = torch.mean(self.seg_fakeSTED0, dim=0)
+                #self.seg_fakeSTED1 = torch.mean(self.seg_fakeSTED1, dim=0)        
 
 
     def backward_D(self):
